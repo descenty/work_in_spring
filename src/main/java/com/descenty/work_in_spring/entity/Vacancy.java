@@ -23,7 +23,7 @@ public class Vacancy {
     private String description;
     private Integer minSalary;
     private Integer maxSalary;
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.LAZY, optional = true)
     @JoinColumn(name = "cityId")
     private City city;
 }

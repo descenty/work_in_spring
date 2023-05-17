@@ -22,7 +22,7 @@ import lombok.AllArgsConstructor;
 public class CityController {
     private final CityService cityService;
 
-    @GetMapping("/")
+    @GetMapping("")
     public List<City> getAll(@RequestParam(required = false) String name) {
         return cityService.getAll(name);
     }
@@ -32,7 +32,7 @@ public class CityController {
         return cityService.getById(id);
     }
 
-    @PostMapping("/save")
+    @PostMapping("")
     public City save(@RequestBody City city) {
         return cityService.save(city);
     }

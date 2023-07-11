@@ -1,0 +1,1 @@
+nodemon -e java,yml --exec "gradle bootRun"

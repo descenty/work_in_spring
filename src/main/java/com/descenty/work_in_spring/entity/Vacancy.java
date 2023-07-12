@@ -1,5 +1,6 @@
 package com.descenty.work_in_spring.entity;
 
+import com.descenty.work_in_spring.entity.collected.City;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -17,13 +18,13 @@ import lombok.Setter;
 @Setter
 public class Vacancy {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY) // ?SEQUENCE
     private Long id;
     private String title;
     private String description;
     private Integer minSalary;
     private Integer maxSalary;
     @ManyToOne(fetch = FetchType.LAZY, optional = true)
-    @JoinColumn(name = "cityId")
+    @JoinColumn(name = "city_id")
     private City city;
 }

@@ -1,7 +1,9 @@
-package com.descenty.work_in_spring.entity;
+package com.descenty.work_in_spring.entity.collected;
 
 import java.util.List;
 
+import com.descenty.work_in_spring.entity.Vacancy;
+import com.descenty.work_in_spring.entity.resume.Resume;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -23,4 +25,6 @@ public class City {
     private String name;
     @OneToMany(mappedBy = "city", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Vacancy> vacancies;
+    @OneToMany(mappedBy = "city", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Resume> resumes;
 }

@@ -6,7 +6,7 @@ import java.util.Optional;
 import org.springframework.stereotype.Service;
 
 import com.descenty.work_in_spring.dto.VacancyDto;
-import com.descenty.work_in_spring.entity.City;
+import com.descenty.work_in_spring.entity.collected.City;
 import com.descenty.work_in_spring.entity.Vacancy;
 import com.descenty.work_in_spring.repository.CityRepository;
 import com.descenty.work_in_spring.repository.VacancyRepository;

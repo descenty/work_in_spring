@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 
-import com.descenty.work_in_spring.entity.City;
+import com.descenty.work_in_spring.entity.collected.City;
 
 @RepositoryRestResource(path = "city")
 public interface CityRepository extends JpaRepository<City, Long> {

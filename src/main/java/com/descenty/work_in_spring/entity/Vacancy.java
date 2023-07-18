@@ -1,20 +1,14 @@
 package com.descenty.work_in_spring.entity;
 
 import java.sql.Timestamp;
+import java.util.List;
 
+import jakarta.persistence.*;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
 import com.descenty.work_in_spring.entity.collected.City;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Table;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -36,9 +30,20 @@ public class Vacancy {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "company_id")
     private Company company;
-    private Boolean isActive;
-    @CreatedDate
-    private Timestamp createdAt;
-    @LastModifiedDate
-    private Timestamp updatedAt;
+    @OneToMany(mappedBy = "vacancy")
+    private List<UserResponse> userResponse;
+    private Boolean isPublished;
+    private Boolean isInArchive;
+    private Timestamp publishedAt;
+    private Timestamp archivedAt;
+
+    public void publish() {
+        this.isPublished = true;
+        this.publishedAt = new Timestamp(System.currentTimeMillis());
+    }
+
+    public void archive() {
+        this.isInArchive = true;
+        this.archivedAt = new Timestamp(System.currentTimeMillis());
+    }
 }

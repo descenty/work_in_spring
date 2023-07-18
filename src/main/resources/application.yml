@@ -12,7 +12,28 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
-        jdbc.lob.non_contextual_creation: true
-  data:
-    rest:
-      basePath: /api
+        jdbc:
+          lob:
+            non_contextual_creation: true
+  security:
+    oauth2:
+      client:
+        registration:
+          keycloak:
+            client-id: spring-boot
+            authorization-grant-type: authorization_code
+            scope: openid
+        provider:
+          keycloak:
+            issuer-uri: https://descenty.ru:8443/realms/WorkIn
+            user-name-attribute: preferred_username
+      resourceserver:
+        jwt:
+          issuer-uri: https://descenty.ru:8443/realms/WorkIn
+          jwk-set-uri: ${spring.security.oauth2.resourceserver.jwt.issuer-uri}/protocol/openid-connect/certs
+#  data:
+#    rest:
+#      basePath: /api
+server:
+  servlet:
+    context-path: /api

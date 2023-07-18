@@ -19,11 +19,11 @@ public class VacancyService {
     private final VacancyRepository vacancyRepository;
     private final CityRepository cityRepository;
 
-    public List<Vacancy> getAll() {
-        return vacancyRepository.findAll();
+    public List<Vacancy> findAll(Long cityId) {
+        return vacancyRepository.findAllByCityId(cityId);
     }
 
-    public Vacancy getById(Long id) {
+    public Vacancy findById(Long id) {
         return vacancyRepository.findById(id).orElseThrow();
     }
 

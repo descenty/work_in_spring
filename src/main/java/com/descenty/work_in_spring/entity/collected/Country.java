@@ -13,7 +13,7 @@ public class Country {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY)
     private City capital;
     @ManyToOne(fetch = FetchType.LAZY)
     private Currency currency;

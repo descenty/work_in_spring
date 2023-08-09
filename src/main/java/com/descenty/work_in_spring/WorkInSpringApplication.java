@@ -6,6 +6,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @SpringBootApplication
 @EnableTransactionManagement
+//@EnableR2dbcAuditing
 public class WorkInSpringApplication {
 
 	public static void main(String[] args) {

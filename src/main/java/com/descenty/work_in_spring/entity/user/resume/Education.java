@@ -1,8 +1,10 @@
-package com.descenty.work_in_spring.entity.resume;
+package com.descenty.work_in_spring.entity.user.resume;
 
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.UUID;
 
 @Entity
 @Table(name = "education")
@@ -10,8 +12,8 @@ import lombok.Setter;
 @Setter
 public class Education {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
     private String university;
     private String faculty;
     private String speciality;

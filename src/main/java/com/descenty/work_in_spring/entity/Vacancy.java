@@ -1,14 +1,9 @@
 package com.descenty.work_in_spring.entity;
 
 import java.sql.Timestamp;
-import java.util.List;
+import java.util.UUID;
 
 import jakarta.persistence.*;
-import org.hibernate.annotations.UpdateTimestamp;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
-
-import com.descenty.work_in_spring.entity.collected.City;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -18,20 +13,25 @@ import lombok.Setter;
 @Setter
 public class Vacancy {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY) // ?SEQUENCE
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.UUID) // ?SEQUENCE
+    private UUID id;
     private String title;
     private String description;
     private Integer minSalary;
     private Integer maxSalary;
+
     @ManyToOne(fetch = FetchType.LAZY, optional = true)
-    @JoinColumn(name = "city_id")
-    private City city;
+    @JoinColumn(name = "area_id", insertable = false, updatable = false)
+    private Area area;
+    @Column(name = "area_id", nullable = true)
+    private Long areaId;
+
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "company_id")
+    @JoinColumn(name = "company_id", insertable = false, updatable = false)
     private Company company;
-    @OneToMany(mappedBy = "vacancy")
-    private List<UserResponse> userResponse;
+    @Column(name = "company_id", nullable = true)
+    private Long companyId;
+
     private Boolean isPublished;
     private Boolean isInArchive;
     private Timestamp publishedAt;

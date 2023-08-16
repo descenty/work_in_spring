@@ -1,42 +1,54 @@
 package com.descenty.work_in_spring.service;
 
+import com.descenty.work_in_spring.dto.area.AreaCreate;
+import com.descenty.work_in_spring.dto.area.AreaDTO;
+import com.descenty.work_in_spring.mapper.AreaMapper;
 import org.springframework.stereotype.Service;
 
-import com.descenty.work_in_spring.entity.Area;
 import com.descenty.work_in_spring.repository.AreaRepository;
 
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Stream;
 
 @Service
-@Transactional
 @RequiredArgsConstructor
 public class AreaService {
     private final AreaRepository areaRepository;
+    private final AreaMapper areaMapper;
 
-    public Flux<Area> getAll() {
-        return areaRepository.findAll();
+    public List<AreaDTO> getAll() {
+        return areaRepository.findAll().stream().map(areaMapper::toDTO).toList();
     }
 
-    public Mono<Area> getById(Integer id) {
-        return areaRepository.findById(id);
+    public Optional<AreaDTO> getById(Long id) {
+        return areaRepository.findById(id).map(areaMapper::toDTO);
     }
 
-    public Mono<Integer> create(Area area) {
-        return areaRepository.save(area).map(Area::getId);
+    public Optional<AreaDTO> create(AreaCreate areaCreate) {
+        return Stream.of(areaCreate)
+                .filter(a -> a.getParentId() == null ||
+                        areaRepository.findById(a.getParentId()).isPresent())
+                .map(areaMapper::toEntity)
+                .map(areaRepository::save)
+                .map(areaMapper::toDTO)
+                .findFirst();
     }
 
-    public Mono<Area> update(Integer id, Area area) {
-        return areaRepository.findById(id).flatMap(a -> {
-            a.setName(area.getName());
-            return areaRepository.save(a);
-        });
+
+    public Optional<AreaDTO> update(Long id, AreaCreate areaCreate) {
+        return areaRepository.findById(id).map(area -> areaMapper.update(area, areaCreate)).map(areaRepository::save).map(areaMapper::toDTO);
     }
 
-    public Mono<Void> delete(Integer id) {
-        return areaRepository.deleteById(id);
+    public Optional<Long> delete(Long id) throws IllegalArgumentException {
+        try {
+            areaRepository.deleteById(id);
+            return Optional.of(id);
+        } catch (IllegalArgumentException e) {
+            return Optional.empty();
+        }
     }
 
 }

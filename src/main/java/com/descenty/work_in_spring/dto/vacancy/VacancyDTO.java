@@ -1,9 +1,9 @@
-package com.descenty.work_in_spring.dto;
+package com.descenty.work_in_spring.dto.vacancy;
 
 import lombok.Data;
 
 @Data
-public class VacancyDto {
+public class VacancyDTO {
     private Long id;
     private String title;
     private String description;

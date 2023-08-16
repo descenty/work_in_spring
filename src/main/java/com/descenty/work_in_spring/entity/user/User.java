@@ -1,10 +1,9 @@
-package com.descenty.work_in_spring.entity;
+package com.descenty.work_in_spring.entity.user;
 
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
-// User entity for Spring Security
 @Entity
 @Table(name = "users")
 @Getter

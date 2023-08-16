@@ -1,21 +1,23 @@
-package com.descenty.work_in_spring.entity;
+package com.descenty.work_in_spring.entity.user.resume;
 
+import com.descenty.work_in_spring.entity.Area;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.UUID;
+
 @Entity
-@Table(name = "company")
+@Table(name = "resume")
 @Getter
 @Setter
-public class Company {
+public class Resume {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    private String name;
-    private String logo;
-    private String website;
-    private String description;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
+    private String title;
+    private String text;
+    private Integer salary;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = true)
     @JoinColumn(name = "area_id", insertable = false, updatable = false)

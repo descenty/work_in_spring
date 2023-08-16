@@ -1,15 +1,16 @@
 package com.descenty.work_in_spring.controller;
 
-import com.descenty.work_in_spring.entity.Area;
+import com.descenty.work_in_spring.dto.area.AreaCreate;
+import com.descenty.work_in_spring.dto.area.AreaDTO;
 import com.descenty.work_in_spring.service.AreaService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
-import java.util.UUID;
+import java.util.stream.Stream;
 
 @RestController
 @RequestMapping("/areas")
@@ -18,30 +19,30 @@ public class AreaController {
     private final AreaService areaService;
 
     @GetMapping("")
-    public ResponseEntity<Flux<Area>> getAll() {
-        return ResponseEntity.ok(areaService.getAll());
+    public List<AreaDTO> getAll() {
+        return areaService.getAll();
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Mono<Area>> getById(@PathVariable Integer id) {
-        return ResponseEntity.ok(areaService.getById(id));
+    public ResponseEntity<AreaDTO> getById(@PathVariable Long id) {
+        return areaService.getById(id).map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
     }
 
     @PostMapping("")
-    public ResponseEntity<Mono<Integer>> create(@RequestBody Area area) {
-        return ResponseEntity.ok(areaService.create(area));
+    @ResponseStatus(HttpStatus.CREATED)
+    public AreaDTO create(@RequestBody AreaCreate areaCreate) {
+        return areaService.create(areaCreate).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<Mono<Area>> update(@PathVariable Integer id,
-            @RequestBody Area area) {
-        return ResponseEntity.ok(areaService.update(id, area));
-
+    public ResponseEntity<AreaDTO> update(@PathVariable Long
+                                                  id, @RequestBody AreaCreate areaCreate) {
+        return areaService.update(id, areaCreate).map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Mono<Void>> delete(@PathVariable Integer id) {
-        return ResponseEntity.ok(areaService.delete(id));
+    public ResponseEntity<Long> delete(@PathVariable Long id) {
+        return areaService.delete(id).map(ResponseEntity::ok).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
 
 }

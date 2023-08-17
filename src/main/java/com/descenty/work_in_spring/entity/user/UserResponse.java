@@ -6,6 +6,8 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.UUID;
+
 @Entity
 @Table(name = "user_response")
 @Getter
@@ -13,19 +15,19 @@ import lombok.Setter;
 public class UserResponse {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    private String id;
+    private UUID id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "vacancy_id", insertable = false, updatable = false)
     private Vacancy vacancy;
     @Column(name = "vacancy_id", nullable = false)
-    private String vacancyId;
+    private UUID vacancyId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "resume_id", insertable = false, updatable = false)
     private Resume resume;
     @Column(name = "resume_id", nullable = false)
-    private String resumeId;
+    private UUID resumeId;
 
     private String coverLetter;
     @Enumerated(EnumType.STRING)

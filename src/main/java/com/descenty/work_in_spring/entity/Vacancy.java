@@ -13,7 +13,7 @@ import lombok.Setter;
 @Setter
 public class Vacancy {
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID) // ?SEQUENCE
+    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
     private String title;
     private String description;

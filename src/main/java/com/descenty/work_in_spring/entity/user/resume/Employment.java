@@ -24,5 +24,5 @@ public class Employment {
     @JoinColumn(name = "resume_id", insertable = false, updatable = false)
     private Resume resume;
     @Column(name = "resume_id", nullable = false)
-    private Long resumeId;
+    private UUID resumeId;
 }

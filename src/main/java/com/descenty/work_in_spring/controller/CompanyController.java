@@ -12,36 +12,36 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.List;
 
 @RestController
-@RequestMapping("/companies")
+@RequestMapping("/areas/")
 @RequiredArgsConstructor
 public class CompanyController {
     private final CompanyService companyService;
 
-    @GetMapping("")
-    public List<CompanyDTO> getAll() {
-        return companyService.getAll();
+    @GetMapping("{areaId}/companies")
+    public List<CompanyDTO> getAll(@PathVariable Long areaId) {
+        return companyService.getAll(areaId);
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<CompanyDTO> getById(@PathVariable Long id) {
-        return companyService.getById(id).map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
+    @GetMapping("/{areaId}/companies/{id}")
+    public ResponseEntity<CompanyDTO> getById(@PathVariable Long areaId, @PathVariable Long id) {
+        return companyService.getById(areaId, id).map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
     }
 
-    @PostMapping("")
+    @PostMapping("/{areaId}/companies")
     @ResponseStatus(HttpStatus.CREATED)
-    public CompanyDTO create(@RequestBody CompanyCreate companyCreate) {
-        return companyService.create(companyCreate).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+    public CompanyDTO create(@PathVariable Long areaId, @RequestBody CompanyCreate companyCreate) {
+        return companyService.create(areaId, companyCreate).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
 
-    @PatchMapping("/{id}")
-    public ResponseEntity<CompanyDTO> update(@PathVariable Long
-                                                     id, @RequestBody CompanyCreate companyCreate) {
-        return companyService.update(id, companyCreate).map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
+    @PatchMapping("/{areaId}/companies/{id}")
+    public ResponseEntity<CompanyDTO> update(@PathVariable Long areaId, @PathVariable Long
+            id, @RequestBody CompanyCreate companyCreate) {
+        return companyService.update(areaId, id, companyCreate).map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Long> delete(@PathVariable Long id) {
-        return companyService.delete(id).map(ResponseEntity::ok).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+    @DeleteMapping("/{areaId}/companies/{id}")
+    public ResponseEntity<Long> delete(@PathVariable Long areaId, @PathVariable Long id) {
+        return companyService.delete(areaId, id) > 0 ? ResponseEntity.ok(id) : ResponseEntity.notFound().build();
     }
 
     // TODO use kotlin microservice instead

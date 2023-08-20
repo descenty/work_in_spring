@@ -25,11 +25,11 @@ spring:
             scope: openid
         provider:
           keycloak:
-            issuer-uri: https://descenty.ru:8443/realms/WorkIn
+            issuer-uri: https://${KC_HOST}:{KC_PORT}/realms/workin
             user-name-attribute: preferred_username
       resourceserver:
         jwt:
-          issuer-uri: https://descenty.ru:8443/realms/WorkIn
+          issuer-uri: https://${KC_HOST}:${KC_PORT}/realms/workin
           jwk-set-uri: ${spring.security.oauth2.resourceserver.jwt.issuer-uri}/protocol/openid-connect/certs
 server:
   servlet:

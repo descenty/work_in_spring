@@ -14,6 +14,7 @@ services:
   keycloak:
     build: containers/keycloak
     container_name: work-in-keycloak
+    restart: always
     command: start-dev --db postgres
     ports:
       - 8443:8443
@@ -28,5 +29,33 @@ services:
       KC_HTTPS_CERTIFICATE_KEY_FILE: /opt/keycloak/conf/certs/tls.key
     depends_on:
       - postgres
+  redis:
+    image: redis:7
+    container_name: restaurant-redis
+    command: >
+      --requirepass ${REDIS_PASSWORD}
+    ports:
+      - 6379:6379
+    environment:
+      - TZ=Europe/Moscow
+    volumes:
+      - redis-data:/data/_data
+  app:
+    image: descenty/work_in_spring:latest
+    container_name: work-in-app
+    restart: always
+    ports:
+      - 8080:8080
+    environment:
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: 5432
+      POSTGRES_DB: workin
+      KC_HOST: keycloak
+      KC_PORT: 8443
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+    env_file:
+      - .env
 volumes:
   postgres-data:
+  redis-data:

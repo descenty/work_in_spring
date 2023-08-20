@@ -2,6 +2,7 @@ package com.descenty.work_in_spring.service;
 
 import com.descenty.work_in_spring.dto.area.AreaCreate;
 import com.descenty.work_in_spring.dto.area.AreaDTO;
+import com.descenty.work_in_spring.dto.area.AreaUpdate;
 import com.descenty.work_in_spring.mapper.AreaMapper;
 import org.springframework.stereotype.Service;
 
@@ -38,17 +39,15 @@ public class AreaService {
     }
 
 
-    public Optional<AreaDTO> update(Long id, AreaCreate areaCreate) {
-        return areaRepository.findById(id).map(area -> areaMapper.update(area, areaCreate)).map(areaRepository::save).map(areaMapper::toDTO);
+    public Optional<AreaDTO> update(Long id, AreaUpdate areaUpdate) {
+        return areaRepository.findById(id).map(area -> areaMapper.update(area, areaUpdate)).map(areaRepository::save).map(areaMapper::toDTO);
     }
 
-    public Optional<Long> delete(Long id) throws IllegalArgumentException {
-        try {
-            areaRepository.deleteById(id);
-            return Optional.of(id);
-        } catch (IllegalArgumentException e) {
-            return Optional.empty();
-        }
+    public boolean delete(Long id) {
+        return areaRepository.findById(id).map(area -> {
+            areaRepository.delete(area);
+            return true;
+        }).orElse(false);
     }
 
 }

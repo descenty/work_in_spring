@@ -16,32 +16,30 @@ public class CompanyService {
     private final CompanyRepository companyRepository;
     private final CompanyMapper companyMapper;
 
-    public List<CompanyDTO> getAll() {
-        return companyRepository.findAll().stream().map(companyMapper::toDTO).toList();
+    public List<CompanyDTO> getAll(Long areaId) {
+        return companyRepository.findAllByAreaId(areaId).stream().map(companyMapper::toDTO).toList();
     }
 
-    public Optional<CompanyDTO> getById(Long id) {
-        return companyRepository.findById(id).map(companyMapper::toDTO);
+    public Optional<CompanyDTO> getById(Long areaId, Long id) {
+        return companyRepository.findByAreaIdAndId(areaId, id).map(companyMapper::toDTO);
     }
 
-    public Optional<CompanyDTO> create(CompanyCreate companyCreate) {
+    public Optional<CompanyDTO> create(Long areaId, CompanyCreate companyCreate) {
         return Optional.of(companyCreate)
-                .map(companyMapper::toEntity)
+                .map(company -> {
+                    company.setAreaId(areaId);
+                    return companyMapper.toEntity(company);
+                })
                 .map(companyRepository::save)
                 .map(companyMapper::toDTO);
     }
 
-    public Optional<CompanyDTO> update(Long id, CompanyCreate companyCreate) {
-        return companyRepository.findById(id).map(company -> companyMapper.update(company, companyCreate)).map(companyRepository::save).map(companyMapper::toDTO);
+    public Optional<CompanyDTO> update(Long areaId, Long id, CompanyCreate companyCreate) {
+        return companyRepository.findByAreaIdAndId(areaId, id).map(company -> companyMapper.update(company, companyCreate)).map(companyRepository::save).map(companyMapper::toDTO);
     }
 
-    public Optional<Long> delete(Long id) {
-        try {
-            companyRepository.deleteById(id);
-            return Optional.of(id);
-        } catch (IllegalArgumentException e) {
-            return Optional.empty();
-        }
+    public Long delete(Long areaId, Long id) {
+        return companyRepository.deleteByAreaIdAndId(areaId, id);
     }
 
 }

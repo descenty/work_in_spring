@@ -1,0 +1,87 @@
+### Create area for company
+POST {{BASE_URL}}/api/v1/areas
+
+{
+    "name": "Петрозаводск"
+}
+
+> {%
+    client.test("Status code is 201", function () {
+        client.assert(response.status === 201, "Response status is not 201");
+    });
+    client.global.set("areaId", response.body.id);
+%}
+
+### Check that area was created
+GET {{BASE_URL}}/api/v1/areas/{{areaId}}
+
+> {%
+    client.test("Status code is 200", function () {
+        client.assert(response.status === 200, "Response status is not 200");
+    });
+%}
+
+### Get all companies
+GET {{BASE_URL}}/api/v1/areas/{{areaId}}/companies
+
+> {%
+    client.test("Status code is 200", function () {
+        client.assert(response.status === 200, "Response status is not 200");
+    });
+    client.test("Response body is a list", function () {
+        client.assert(response.body instanceof Array, "Response body is not a list");
+    });
+%}
+
+### Create company
+POST {{BASE_URL}}/api/v1/areas/{{areaId}}/companies
+
+{
+"name": "Сбер",
+"description": "Самый крупный банк России",
+}
+
+> {%
+    client.test("Status code is 201", function () {
+        client.assert(response.status === 201, "Response status is not 201");
+    });
+    client.global.set("companyId", response.body.id);
+%}
+
+### Get company by id
+
+GET {{BASE_URL}}/api/v1/areas/{{areaId}}/companies/{{companyId}}
+
+> {%
+    client.test("Status code is 200", function () {
+        client.assert(response.status === 200, "Response status is not 200");
+    });
+%}
+
+### Update company
+
+PATCH {{BASE_URL}}/api/v1/areas/{{areaId}}/companies/{{companyId}}
+
+{
+"name": "Тинькофф"
+}
+
+> {%
+    client.test("Status code is 200", function () {
+        client.assert(response.status === 200, "Response status is not 200");
+    });
+    client.test("Company name is updated", function () {
+        client.assert(response.body.name === "Тинькофф", "Company name is not updated");
+    });
+%}
+
+### Delete company
+
+DELETE {{BASE_URL}}/api/v1/areas/{{areaId}}/companies/{{companyId}}
+
+> {%
+    client.test("Status code is 200", function () {
+        client.assert(response.status === 200, "Response status is not 200");
+    });
+%}
+

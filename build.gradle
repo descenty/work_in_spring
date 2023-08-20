@@ -10,7 +10,7 @@ jib.to.image = 'descenty/work_in_spring'
 
 group = 'com.descenty'
 version = '0.0.1-SNAPSHOT'
-sourceCompatibility = '19'
+sourceCompatibility = '17'
 
 configurations {
     compileOnly {

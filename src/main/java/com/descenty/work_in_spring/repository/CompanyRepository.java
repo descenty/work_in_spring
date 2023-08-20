@@ -12,8 +12,13 @@ import org.springframework.stereotype.Repository;
 
 import com.descenty.work_in_spring.entity.Area;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
 public interface CompanyRepository extends JpaRepository<Company, Long> {
+    List<Company> findAllByAreaId(Long areaId);
+    Optional<Company> findByAreaIdAndId(Long areaId, Long id);
+
+    Long deleteByAreaIdAndId(Long areaId, Long id);
 }

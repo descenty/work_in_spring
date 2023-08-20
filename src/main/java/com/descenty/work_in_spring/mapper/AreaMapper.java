@@ -2,6 +2,7 @@ package com.descenty.work_in_spring.mapper;
 
 import com.descenty.work_in_spring.dto.area.AreaCreate;
 import com.descenty.work_in_spring.dto.area.AreaDTO;
+import com.descenty.work_in_spring.dto.area.AreaUpdate;
 import com.descenty.work_in_spring.entity.Area;
 import com.descenty.work_in_spring.repository.AreaRepository;
 import org.mapstruct.Mapper;
@@ -15,6 +16,6 @@ public interface AreaMapper {
 
     Area toEntity(AreaCreate areaCreate);
 
-    Area update(@MappingTarget Area area, AreaCreate areaCreate);
+    Area update(@MappingTarget Area area, AreaUpdate areaUpdate);
 
 }

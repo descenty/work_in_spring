@@ -70,9 +70,6 @@ DELETE {{BASE_URL}}/areas/{{areaId}}
     client.test("Status code is 200", function () {
         client.assert(response.status === 200, "Status code is not 200");
     });
-    client.test("Response is an integer", function () {
-        client.assert(typeof response.body === "number", "Response is not an integer");
-    });
 %}
 
 

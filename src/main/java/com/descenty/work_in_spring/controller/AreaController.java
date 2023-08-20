@@ -2,6 +2,7 @@ package com.descenty.work_in_spring.controller;
 
 import com.descenty.work_in_spring.dto.area.AreaCreate;
 import com.descenty.work_in_spring.dto.area.AreaDTO;
+import com.descenty.work_in_spring.dto.area.AreaUpdate;
 import com.descenty.work_in_spring.service.AreaService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -36,13 +37,13 @@ public class AreaController {
 
     @PatchMapping("/{id}")
     public ResponseEntity<AreaDTO> update(@PathVariable Long
-                                                  id, @RequestBody AreaCreate areaCreate) {
-        return areaService.update(id, areaCreate).map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
+                                                  id, @RequestBody AreaUpdate areaUpdate) {
+        return areaService.update(id, areaUpdate).map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Long> delete(@PathVariable Long id) {
-        return areaService.delete(id).map(ResponseEntity::ok).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+    public ResponseEntity<?> delete(@PathVariable Long id) {
+        return areaService.delete(id) ? ResponseEntity.ok().build() : ResponseEntity.notFound().build();
     }
 
 }

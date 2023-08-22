@@ -27,11 +27,16 @@ services:
       KC_HOSTNAME: ${KC_HOST}
       KC_HTTPS_CERTIFICATE_FILE: /opt/keycloak/conf/certs/tls.crt
       KC_HTTPS_CERTIFICATE_KEY_FILE: /opt/keycloak/conf/certs/tls.key
+    healthcheck:
+      test: [ "CMD", "curl", "--head","fsS", "https://keycloak:8443/health/ready" ]
+      interval: 5s
+      timeout: 2s
+      retries: 15
     depends_on:
       - postgres
   redis:
     image: redis:7
-    container_name: restaurant-redis
+    container_name: work-in-redis
     command: >
       --requirepass ${REDIS_PASSWORD}
     ports:
@@ -41,7 +46,8 @@ services:
     volumes:
       - redis-data:/data/_data
   app:
-    image: descenty/work_in_spring:latest
+    image: descenty/work_in_spring
+    pull_policy: always
     container_name: work-in-app
     restart: always
     ports:
@@ -50,12 +56,15 @@ services:
       POSTGRES_HOST: postgres
       POSTGRES_PORT: 5432
       POSTGRES_DB: workin
-      KC_HOST: keycloak
       KC_PORT: 8443
       REDIS_HOST: redis
       REDIS_PORT: 6379
     env_file:
       - .env
+    depends_on:
+      - postgres
+      - keycloak
+      - redis
 volumes:
   postgres-data:
   redis-data:

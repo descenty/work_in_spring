@@ -1,8 +1,9 @@
 ### Create area for company
-POST {{BASE_URL}}/api/v1/areas
+POST {{BASE_URL}}/areas
+content-type: application/json
 
 {
-    "name": "Петрозаводск"
+    "name": "Москва"
 }
 
 > {%
@@ -13,7 +14,7 @@ POST {{BASE_URL}}/api/v1/areas
 %}
 
 ### Check that area was created
-GET {{BASE_URL}}/api/v1/areas/{{areaId}}
+GET {{BASE_URL}}/areas/{{areaId}}
 
 > {%
     client.test("Status code is 200", function () {
@@ -22,7 +23,7 @@ GET {{BASE_URL}}/api/v1/areas/{{areaId}}
 %}
 
 ### Get all companies
-GET {{BASE_URL}}/api/v1/areas/{{areaId}}/companies
+GET {{BASE_URL}}/areas/{{areaId}}/companies
 
 > {%
     client.test("Status code is 200", function () {
@@ -34,11 +35,12 @@ GET {{BASE_URL}}/api/v1/areas/{{areaId}}/companies
 %}
 
 ### Create company
-POST {{BASE_URL}}/api/v1/areas/{{areaId}}/companies
+POST {{BASE_URL}}/areas/{{areaId}}/companies
+content-type: application/json
 
 {
-"name": "Сбер",
-"description": "Самый крупный банк России",
+  "name": "Сбер",
+  "description": "Самый крупный банк России"
 }
 
 > {%
@@ -50,7 +52,7 @@ POST {{BASE_URL}}/api/v1/areas/{{areaId}}/companies
 
 ### Get company by id
 
-GET {{BASE_URL}}/api/v1/areas/{{areaId}}/companies/{{companyId}}
+GET {{BASE_URL}}/areas/{{areaId}}/companies/{{companyId}}
 
 > {%
     client.test("Status code is 200", function () {
@@ -60,15 +62,19 @@ GET {{BASE_URL}}/api/v1/areas/{{areaId}}/companies/{{companyId}}
 
 ### Update company
 
-PATCH {{BASE_URL}}/api/v1/areas/{{areaId}}/companies/{{companyId}}
+PATCH {{BASE_URL}}/areas/{{areaId}}/companies/{{companyId}}
+content-type: application/json
 
 {
-"name": "Тинькофф"
+  "name": "Тинькофф"
 }
 
 > {%
     client.test("Status code is 200", function () {
         client.assert(response.status === 200, "Response status is not 200");
+    });
+    client.test("Company areaId is not changed", function () {
+        client.assert(response.body.areaId === parseInt(client.global.get("areaId")), "Company areaId is changed");
     });
     client.test("Company name is updated", function () {
         client.assert(response.body.name === "Тинькофф", "Company name is not updated");
@@ -77,7 +83,7 @@ PATCH {{BASE_URL}}/api/v1/areas/{{areaId}}/companies/{{companyId}}
 
 ### Delete company
 
-DELETE {{BASE_URL}}/api/v1/areas/{{areaId}}/companies/{{companyId}}
+DELETE {{BASE_URL}}/areas/{{areaId}}/companies/{{companyId}}
 
 > {%
     client.test("Status code is 200", function () {

@@ -1,24 +1,20 @@
 package com.descenty.work_in_spring.configuration;
 
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
+@ConditionalOnProperty(name = "keycloak.enabled", havingValue = "true", matchIfMissing = true)
 @EnableWebSecurity
 public class SecurityConfig {
 
-//    @Bean
-//    JwtDecoder jwtDecoder() {
-//        return
-//    }
-
     @Bean
-    SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         // configure CORS allowed origins
         http.cors().configurationSource(request -> {
             var cors = new org.springframework.web.cors.CorsConfiguration();

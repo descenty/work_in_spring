@@ -25,7 +25,7 @@ spring:
             scope: openid
         provider:
           keycloak:
-            issuer-uri: https://${KC_HOST}:{KC_PORT}/realms/workin
+            issuer-uri: https://${KC_HOST}:${KC_PORT}/realms/workin
             user-name-attribute: preferred_username
       resourceserver:
         jwt:

@@ -1,15 +1,23 @@
 package com.descenty.work_in_spring.area.service;
 
 import com.descenty.work_in_spring.area.AreaMapper;
+import com.descenty.work_in_spring.area.constant.MainAreas;
 import com.descenty.work_in_spring.area.dto.AreaCreate;
 import com.descenty.work_in_spring.area.dto.AreaDTO;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.transaction.Transactional;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 
 import com.descenty.work_in_spring.area.repository.AreaRepository;
 
 import lombok.RequiredArgsConstructor;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -20,8 +28,24 @@ public class AreaService {
     private final AreaRepository areaRepository;
     private final AreaMapper areaMapper;
 
-    public List<AreaDTO> getAll() {
-        return areaRepository.findAll().stream().map(areaMapper::toDTO).toList();
+    public List<AreaDTO> getAllParents() {
+        return areaRepository.findAllByParentIdIsNull().stream().map(areaMapper::toDTO).toList();
+    }
+
+    public Optional<List<AreaDTO>> getAllMain(Long id) {
+        Optional<AreaDTO> area = areaRepository.findById(id).map(areaMapper::toDTO);
+        if (area.isEmpty()) return Optional.empty();
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            InputStream inputStream = new ClassPathResource("static/area/main_areas.json").getInputStream();
+            MainAreas mainAreas = mapper.readValue(inputStream, MainAreas.class);
+            String[] childAreas = mainAreas.areas.get(area.get().getName());
+            if (childAreas == null) return Optional.empty();
+            return Optional.of(Arrays.stream(childAreas).map(areaRepository::findByName).filter(Optional::isPresent).map(Optional::get).map(areaMapper::toDTO).toList());
+        } catch (IOException e) {
+            e.printStackTrace();
+            return Optional.empty();
+        }
     }
 
     public Optional<AreaDTO> getById(Long id) {
@@ -30,15 +54,8 @@ public class AreaService {
 
     @Transactional
     public Optional<AreaDTO> create(AreaCreate areaCreate) {
-        return Stream.of(areaCreate)
-                .filter(a -> a.getParentId() == null ||
-                        areaRepository.findById(a.getParentId()).isPresent())
-                .map(areaMapper::toEntity)
-                .map(areaRepository::save)
-                .map(areaMapper::toDTO)
-                .findFirst();
+        return Stream.of(areaCreate).filter(a -> a.getParentId() == null || areaRepository.findById(a.getParentId()).isPresent()).map(areaMapper::toEntity).map(areaRepository::save).map(areaMapper::toDTO).findFirst();
     }
-
 
     @Transactional
     public Optional<AreaDTO> update(Long id, AreaCreate areaCreate) {

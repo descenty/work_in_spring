@@ -1,4 +1,4 @@
-package com.descenty.work_in_spring.api;
+package com.descenty.work_in_spring.company.service;
 
 import com.descenty.work_in_spring.area.dto.AreaCreate;
 import com.descenty.work_in_spring.area.repository.AreaRepository;
@@ -6,7 +6,6 @@ import com.descenty.work_in_spring.area.service.AreaService;
 import com.descenty.work_in_spring.company.dto.CompanyCreate;
 import com.descenty.work_in_spring.company.dto.CompanyDTO;
 import com.descenty.work_in_spring.area.dto.AreaDTO;
-import com.descenty.work_in_spring.company.service.CompanyService;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -18,7 +17,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
 @AutoConfigureTestDatabase
-class CompanyTests {
+class CompanyServiceTests {
     @Autowired
     private AreaService areaService;
     @Autowired

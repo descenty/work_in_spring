@@ -6,8 +6,8 @@ import com.descenty.work_in_spring.area.dto.AreaDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -18,29 +18,42 @@ public class AreaController {
     private final AreaService areaService;
 
     @GetMapping("")
-    public List<AreaDTO> getAll() {
-        return areaService.getAll();
+    public List<AreaDTO> getAllParents() {
+        return areaService.getAllParents();
+    }
+
+    @GetMapping("{id}/main")
+    public ResponseEntity<List<AreaDTO>> getAllMain(@PathVariable Long id) {
+        return areaService.getAllMain(id).map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<AreaDTO> getById(@PathVariable Long id) {
-        return areaService.getById(id).map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
+        return areaService.getById(id).map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @PostMapping("")
     @ResponseStatus(HttpStatus.CREATED)
-    public AreaDTO create(@RequestBody AreaCreate areaCreate) {
-        return areaService.create(areaCreate).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+    // @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<AreaDTO> create(@RequestBody AreaCreate areaCreate) {
+        return areaService.create(areaCreate).map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<AreaDTO> update(@PathVariable Long
-                                                  id, @RequestBody AreaCreate areaCreate) {
-        return areaService.update(id, areaCreate).map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<AreaDTO> update(@PathVariable Long id,
+            @RequestBody AreaCreate areaCreate) {
+        return areaService.update(id, areaCreate).map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> delete(@PathVariable Long id) {
-        return areaService.delete(id) ? ResponseEntity.ok().build() : ResponseEntity.notFound().build();
+        return areaService.delete(id) ? ResponseEntity.ok().build()
+                : ResponseEntity.notFound().build();
     }
 }

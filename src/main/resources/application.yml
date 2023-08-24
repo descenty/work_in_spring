@@ -20,8 +20,10 @@ spring:
       client:
         registration:
           keycloak:
-            client-id: spring-boot
+            client-id: backend
+            client-name: backend
             authorization-grant-type: authorization_code
+            client-secret: NHitFrbwJCOg0Cks5mghh2jaHfSiAoi7
             scope: openid
         provider:
           keycloak:

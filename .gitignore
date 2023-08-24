@@ -34,4 +34,4 @@ out/
 /.nb-gradle/
 
 containers/keycloak/certs/
-http-client.env.json
+tests/api/http-client.env.json

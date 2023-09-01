@@ -13,7 +13,7 @@ Prod run using Docker Compose:
 Test using Docker Compose:
 
 ```bash
-./gradlew jib && docker compose -f compose.test.yaml up --force-recreate -V --build --abort-on-container-exit --exit-code-from test-app
+./gradlew jibDockerBuild && docker compose -f compose.test.yaml up --force-recreate -V --build --abort-on-container-exit --exit-code-from test-app
 ```
 
 # TODO add pre-commit hook

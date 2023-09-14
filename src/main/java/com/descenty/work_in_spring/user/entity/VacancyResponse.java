@@ -1,7 +1,6 @@
-package com.descenty.work_in_spring.user.dto;
+package com.descenty.work_in_spring.user.entity;
 
 import com.descenty.work_in_spring.vacancy.Vacancy;
-import com.descenty.work_in_spring.user.entity.Resume;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -9,11 +8,11 @@ import lombok.Setter;
 import java.util.UUID;
 
 @Entity
-@Table(name = "user_response")
+@Table(name = "vacancy_response")
 @Getter
 @Setter
-public class UserResponse {
-    public enum UserResponseStatus {
+public class VacancyResponse {
+    public enum Status {
         PENDING,
         ACCEPTED,
         REJECTED
@@ -36,6 +35,7 @@ public class UserResponse {
     private UUID resumeId;
 
     private String coverLetter;
+
     @Enumerated(EnumType.STRING)
-    private UserResponseStatus status;
+    private Status status;
 }

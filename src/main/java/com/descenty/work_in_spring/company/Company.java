@@ -23,4 +23,7 @@ public class Company {
     private Area area;
     @Column(name = "area_id", nullable = true)
     private Long areaId;
+    //
+    // @ManyToMany(fetch = FetchType.LAZY)
+
 }

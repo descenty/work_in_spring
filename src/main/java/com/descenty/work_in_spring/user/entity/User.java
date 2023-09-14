@@ -1,19 +1,17 @@
-package com.descenty.work_in_spring.user.entity;
+// package com.descenty.work_in_spring.user.entity;
 
-import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+// import jakarta.persistence.*;
+// import lombok.Getter;
+// import lombok.Setter;
 
-import java.util.UUID;
+// import java.util.UUID;
 
-@Entity
-@Table(name = "users")
-@Getter
-@Setter
-public class User {
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
-    private String username;
-    private String password;
-}
+// @Entity
+// @Table(name = "user")
+// @Getter
+// @Setter
+// public class User {
+//     @Id
+//     @GeneratedValue(strategy = GenerationType.UUID)
+//     private UUID id;
+// }

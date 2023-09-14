@@ -36,14 +36,14 @@ public class AreaController {
 
     @PostMapping("")
     @ResponseStatus(HttpStatus.CREATED)
-    // @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('admin')")
     public ResponseEntity<AreaDTO> create(@RequestBody AreaCreate areaCreate) {
         return areaService.create(areaCreate).map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
     @PatchMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('admin')")
     public ResponseEntity<AreaDTO> update(@PathVariable Long id,
             @RequestBody AreaCreate areaCreate) {
         return areaService.update(id, areaCreate).map(ResponseEntity::ok)
@@ -51,7 +51,7 @@ public class AreaController {
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('admin')")
     public ResponseEntity<?> delete(@PathVariable Long id) {
         return areaService.delete(id) ? ResponseEntity.ok().build()
                 : ResponseEntity.notFound().build();

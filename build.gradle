@@ -40,6 +40,8 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
     implementation 'com.h2database:h2'
     implementation 'org.springframework.boot:spring-boot-starter-websocket'
+    implementation 'org.keycloak:keycloak-spring-boot-starter:22.0.3'
+    implementation 'org.keycloak:keycloak-admin-client:22.0.3'
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
     annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.5.Final'

@@ -19,14 +19,18 @@ public class SecurityConfiguration {
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.cors().configurationSource(request -> {
             var cors = new org.springframework.web.cors.CorsConfiguration();
-            cors.setAllowedOrigins(java.util.List.of("http://localhost:19006"));
+            cors.setAllowedOrigins(
+                    java.util.List.of("http://localhost:19006"));
             // cors.setAllowedMethods(java.util.List.of("GET", "POST", "PUT", "DELETE"));
             // cors.setAllowedHeaders(java.util.List.of("*"));
             return cors;
         });
-        http.csrf().disable().authorizeHttpRequests().anyRequest().permitAll().and().oauth2ResourceServer().jwt();
-        http.oauth2Client().and().oauth2Login().tokenEndpoint().and().userInfoEndpoint();
-        http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+        http.csrf().disable().authorizeHttpRequests().anyRequest().permitAll()
+                .and().oauth2ResourceServer().jwt().jwtAuthenticationConverter(new KeycloakJwtAuthenticationConverter());
+        http.oauth2Client().and().oauth2Login().tokenEndpoint().and()
+                .userInfoEndpoint();
+        http.sessionManagement()
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         return http.build();
     }
 }

@@ -32,8 +32,8 @@ class CompanyServiceTests {
     @BeforeEach
     void init() {
         areaRepository.deleteAll();
-        areaId = areaService.create(AreaCreate.builder().id(1L).name("test").build()).map(AreaDTO::getId).orElseThrow();
-        companyId = companyService.create(areaId, CompanyCreate.builder().id(1L).name("test").build()).map(CompanyDTO::getId).orElseThrow();
+        areaId = areaService.create(AreaCreate.builder().id(1L).name("test").build()).orElseThrow();
+        companyId = companyService.create(areaId, CompanyCreate.builder().id(1L).name("test").build()).orElseThrow();
     }
 
     @Test

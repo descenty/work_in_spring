@@ -17,20 +17,30 @@ public class Vacancy {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
+
+    @Column(nullable = false)
     private String title;
+
+    @Column(nullable = false)
     private String description;
+
+    @Column(nullable = true)
     private Integer minSalary;
+
+    @Column(nullable = true)
     private Integer maxSalary;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = true)
     @JoinColumn(name = "area_id", insertable = false, updatable = false)
     private Area area;
+
     @Column(name = "area_id", nullable = true)
     private Long areaId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "company_id", insertable = false, updatable = false)
     private Company company;
+
     @Column(name = "company_id", nullable = true)
     private Long companyId;
 

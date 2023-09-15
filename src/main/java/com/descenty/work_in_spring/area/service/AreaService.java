@@ -34,14 +34,17 @@ public class AreaService {
 
     public Optional<List<AreaDTO>> getAllMain(Long id) {
         Optional<AreaDTO> area = areaRepository.findById(id).map(areaMapper::toDTO);
-        if (area.isEmpty()) return Optional.empty();
+        if (area.isEmpty())
+            return Optional.empty();
         try {
             ObjectMapper mapper = new ObjectMapper();
             InputStream inputStream = new ClassPathResource("static/area/main_areas.json").getInputStream();
             MainAreas mainAreas = mapper.readValue(inputStream, MainAreas.class);
             String[] childAreas = mainAreas.areas.get(area.get().getName());
-            if (childAreas == null) return Optional.empty();
-            return Optional.of(Arrays.stream(childAreas).map(areaRepository::findByName).filter(Optional::isPresent).map(Optional::get).map(areaMapper::toDTO).toList());
+            if (childAreas == null)
+                return Optional.empty();
+            return Optional.of(Arrays.stream(childAreas).map(areaRepository::findByName).filter(Optional::isPresent)
+                    .map(Optional::get).map(areaMapper::toDTO).toList());
         } catch (IOException e) {
             e.printStackTrace();
             return Optional.empty();
@@ -53,13 +56,16 @@ public class AreaService {
     }
 
     @Transactional
-    public Optional<AreaDTO> create(AreaCreate areaCreate) {
-        return Stream.of(areaCreate).filter(a -> a.getParentId() == null || areaRepository.findById(a.getParentId()).isPresent()).map(areaMapper::toEntity).map(areaRepository::save).map(areaMapper::toDTO).findFirst();
+    public Optional<Long> create(AreaCreate areaCreate) {
+        if (areaCreate.getParentId() != null && !areaRepository.existsById(areaCreate.getParentId()))
+            return Optional.empty();
+        return Optional.of(areaMapper.toEntity(areaCreate)).map(areaRepository::save).map(area -> area.getId());
     }
 
     @Transactional
     public Optional<AreaDTO> update(Long id, AreaCreate areaCreate) {
-        return areaRepository.findById(id).map(area -> areaMapper.update(area, areaCreate)).map(areaRepository::save).map(areaMapper::toDTO);
+        return areaRepository.findById(id).map(area -> areaMapper.update(area, areaCreate)).map(areaRepository::save)
+                .map(areaMapper::toDTO);
     }
 
     @Transactional

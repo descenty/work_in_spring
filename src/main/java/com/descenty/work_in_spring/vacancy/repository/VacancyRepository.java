@@ -18,6 +18,8 @@ public interface VacancyRepository extends JpaRepository<Vacancy, UUID> {
 
     Optional<Vacancy> findByAreaIdAndCompanyIdAndId(Long areaId, Long companyId, UUID id);
 
+    boolean existsByAreaIdAndCompanyId(Long areaId, Long companyId);
+
     Long deleteByAreaIdAndCompanyIdAndId(Long areaId, Long companyId, UUID id);
 
 }

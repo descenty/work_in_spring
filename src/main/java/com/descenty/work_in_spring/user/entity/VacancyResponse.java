@@ -13,9 +13,7 @@ import java.util.UUID;
 @Setter
 public class VacancyResponse {
     public enum Status {
-        PENDING,
-        ACCEPTED,
-        REJECTED
+        PENDING, ACCEPTED, REJECTED
     }
 
     @Id
@@ -35,6 +33,9 @@ public class VacancyResponse {
     private UUID resumeId;
 
     private String coverLetter;
+
+    @Column(nullable = false)
+    private Integer salary;
 
     @Enumerated(EnumType.STRING)
     private Status status;

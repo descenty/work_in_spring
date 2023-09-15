@@ -10,7 +10,10 @@ import java.util.Optional;
 @Repository
 public interface CompanyRepository extends JpaRepository<Company, Long> {
     List<Company> findAllByAreaId(Long areaId);
+
     Optional<Company> findByAreaIdAndId(Long areaId, Long id);
+
+    boolean existsByIdAndEmployersEmailsContaining(Long id, String email);
 
     Long deleteByAreaIdAndId(Long areaId, Long id);
 }

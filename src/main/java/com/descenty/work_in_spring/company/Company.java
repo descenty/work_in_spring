@@ -1,5 +1,8 @@
 package com.descenty.work_in_spring.company;
 
+import java.util.List;
+import java.util.UUID;
+
 import com.descenty.work_in_spring.area.Area;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -32,7 +35,7 @@ public class Company {
     @Column(name = "area_id", nullable = true)
     @JsonIgnore
     private Long areaId;
-    //
-    // @ManyToMany(fetch = FetchType.LAZY)
-
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "company_employer", joinColumns = @JoinColumn(name = "company_id"), inverseJoinColumns = @JoinColumn(name = "employer_email"))
+    private List<String> employersEmails;
 }

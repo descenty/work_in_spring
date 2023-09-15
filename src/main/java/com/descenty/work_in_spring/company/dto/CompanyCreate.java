@@ -5,6 +5,8 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Data;
 
+import java.util.List;
+
 @Data
 @Builder
 public class CompanyCreate {
@@ -16,4 +18,5 @@ public class CompanyCreate {
     private String description;
     @NotNull
     private Long areaId;
+    private List<String> employersEmails;
 }

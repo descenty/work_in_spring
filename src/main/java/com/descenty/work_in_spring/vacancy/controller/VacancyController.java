@@ -7,11 +7,11 @@ import jakarta.validation.Valid;
 import com.descenty.work_in_spring.vacancy.dto.VacancyCreate;
 import com.descenty.work_in_spring.vacancy.dto.VacancyDTO;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.util.List;
@@ -49,8 +49,8 @@ public class VacancyController {
     @PostMapping("/companies/{companyId}/areas/{areaId}/vacancies")
     @PreAuthorize("hasAuthority('admin') or hasAuthority('employer')")
     public ResponseEntity<?> create(@PathVariable Long companyId, @PathVariable Long areaId,
-            @Valid @RequestBody VacancyCreate vacancyCreate) {
-        Optional<UUID> vacancyId = vacancyService.create(companyId, areaId, vacancyCreate);
+            @Valid @RequestBody VacancyCreate vacancyCreate, @AuthenticationPrincipal UserDetails userDetails) {
+        Optional<UUID> vacancyId = vacancyService.create(companyId, areaId, vacancyCreate, userDetails);
         return vacancyId.isPresent()
                 ? ResponseEntity.created(ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
                         .buildAndExpand(vacancyId.get()).toUri()).build()
@@ -60,15 +60,17 @@ public class VacancyController {
     @PatchMapping("/areas/{areaId}/companies/{companyId}/vacancies/{id}")
     @PreAuthorize("hasAuthority('admin') or hasRole('employer')")
     public ResponseEntity<VacancyDTO> update(@PathVariable Long areaId, @PathVariable Long companyId,
-            @PathVariable UUID id, @Valid @RequestBody VacancyCreate vacancyCreate) {
-        return vacancyService.update(areaId, companyId, id, vacancyCreate).map(ResponseEntity::ok)
+            @PathVariable UUID id, @Valid @RequestBody VacancyCreate vacancyCreate,
+            @AuthenticationPrincipal UserDetails userDetails) {
+        return vacancyService.update(areaId, companyId, id, vacancyCreate, userDetails).map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
     @DeleteMapping("/areas/{areaId}/companies/{companyId}/vacancies/{id}")
     @PreAuthorize("hasAuthority('admin') or hasRole('employer')")
-    public ResponseEntity<?> delete(@PathVariable Long areaId, @PathVariable Long companyId, @PathVariable UUID id) {
-        return vacancyService.delete(areaId, companyId, id) ? ResponseEntity.ok().build()
+    public ResponseEntity<?> delete(@PathVariable Long areaId, @PathVariable Long companyId, @PathVariable UUID id,
+            @AuthenticationPrincipal UserDetails userDetails) {
+        return vacancyService.delete(areaId, companyId, id, userDetails) ? ResponseEntity.ok().build()
                 : ResponseEntity.notFound().build();
     }
 }

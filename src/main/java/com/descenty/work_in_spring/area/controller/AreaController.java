@@ -56,6 +56,6 @@ public class AreaController {
     @DeleteMapping("/{id}")
     @PreAuthorize("hasAuthority('admin')")
     public ResponseEntity<?> delete(@PathVariable Long id) {
-        return areaService.delete(id) ? ResponseEntity.ok().build() : ResponseEntity.notFound().build();
+        return areaService.delete(id) ? ResponseEntity.noContent().build() : ResponseEntity.notFound().build();
     }
 }

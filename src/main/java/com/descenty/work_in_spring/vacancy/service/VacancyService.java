@@ -8,6 +8,8 @@ import com.descenty.work_in_spring.vacancy.dto.VacancyCreate;
 import com.descenty.work_in_spring.vacancy.dto.VacancyDTO;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -40,8 +42,9 @@ public class VacancyService {
     }
 
     @Transactional
-    public Optional<UUID> create(Long companyId, Long areaId, VacancyCreate vacancyCreate) {
-        if (!companyRepository.existsById(companyId) || !areaRepository.existsById(areaId))
+    public Optional<UUID> create(Long companyId, Long areaId, VacancyCreate vacancyCreate, UserDetails userDetails) {
+        if (!companyRepository.existsById(companyId) || !areaRepository.existsById(areaId)
+                || !companyRepository.existsByIdAndEmployersEmailsContaining(companyId, userDetails.getUsername()))
             return Optional.empty();
         return Optional.of(vacancyCreate).map(vacancy -> {
             vacancy.setAreaId(areaId);
@@ -51,14 +54,20 @@ public class VacancyService {
     }
 
     @Transactional
-    public Optional<VacancyDTO> update(Long areaId, Long companyId, UUID id, VacancyCreate vacancyCreate) {
+    public Optional<VacancyDTO> update(Long companyId, Long areaId, UUID id, VacancyCreate vacancyCreate,
+            UserDetails userDetails) {
+        if (!companyRepository.existsById(companyId) || !areaRepository.existsById(areaId)
+                || !companyRepository.existsByIdAndEmployersEmailsContaining(companyId, userDetails.getUsername()))
+            return Optional.empty();
         return vacancyRepository.findByAreaIdAndCompanyIdAndId(areaId, companyId, id)
                 .map(vacancy -> vacancyMapper.update(vacancy, vacancyCreate)).map(vacancyRepository::save)
                 .map(vacancyMapper::toDTO);
     }
 
     @Transactional
-    public boolean delete(Long areaId, Long companyId, UUID id) {
+    public boolean delete(Long areaId, Long companyId, UUID id, UserDetails userDetails) {
+        if (!companyRepository.existsByIdAndEmployersEmailsContaining(companyId, userDetails.getUsername()))
+            return false;
         return vacancyRepository.deleteByAreaIdAndCompanyIdAndId(areaId, companyId, id) > 0;
     }
 

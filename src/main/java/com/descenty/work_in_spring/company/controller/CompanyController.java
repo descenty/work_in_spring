@@ -36,7 +36,7 @@ public class CompanyController {
     @PreAuthorize("hasAuthority('admin') or hasAuthority('employer')")
     public ResponseEntity<?> create(@PathVariable Long areaId, @Valid @RequestBody CompanyCreate companyCreate,
             @AuthenticationPrincipal UserDetails userDetails) {
-        Optional<Long> companyId = companyService.create(areaId, companyCreate);
+        Optional<Long> companyId = companyService.create(areaId, companyCreate, userDetails);
         return companyId.isPresent()
                 ? ResponseEntity.created(ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
                         .buildAndExpand(companyId.get()).toUri()).build()
@@ -45,15 +45,17 @@ public class CompanyController {
 
     @PatchMapping("/companies/{id}")
     @PreAuthorize("hasAuthority('admin') or hasAuthority('employer')")
-    public ResponseEntity<CompanyDTO> update(@PathVariable Long id, @Valid @RequestBody CompanyCreate companyCreate) {
-        return companyService.update(id, companyCreate).map(ResponseEntity::ok)
+    public ResponseEntity<CompanyDTO> update(@PathVariable Long id, @Valid @RequestBody CompanyCreate companyCreate,
+            @AuthenticationPrincipal UserDetails userDetails) {
+        return companyService.update(id, companyCreate, userDetails).map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
     @DeleteMapping("/companies/{id}")
     @PreAuthorize("hasAuthority('admin') or hasAuthority('employer')")
-    public ResponseEntity<Long> delete(@PathVariable Long id) {
-        return companyService.delete(id) ? ResponseEntity.ok(id) : ResponseEntity.notFound().build();
+    public ResponseEntity<?> delete(@PathVariable Long id, @AuthenticationPrincipal UserDetails userDetails) {
+        return companyService.delete(id, userDetails) ? ResponseEntity.noContent().build()
+                : ResponseEntity.notFound().build();
     }
 
     // TODO use kotlin microservice instead

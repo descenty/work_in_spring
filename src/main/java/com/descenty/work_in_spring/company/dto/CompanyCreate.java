@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 
 import java.util.List;
+import java.util.UUID;
 
 @Data
 @Builder
@@ -18,5 +19,6 @@ public class CompanyCreate {
     private String description;
     @NotNull
     private Long areaId;
-    private List<String> employersEmails;
+    private UUID creatorId;
+    private List<UUID> employersIds;
 }

@@ -35,7 +35,11 @@ public class Company {
     @Column(name = "area_id", nullable = true)
     @JsonIgnore
     private Long areaId;
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "company_employer", joinColumns = @JoinColumn(name = "company_id"), inverseJoinColumns = @JoinColumn(name = "employer_email"))
-    private List<String> employersEmails;
+    @Column(name = "creator_id", nullable = false)
+    private UUID creatorId;
+    @ElementCollection
+    // in table company_employers: company_id | employer_id
+    @CollectionTable(name = "company_employers", joinColumns = @JoinColumn(name = "company_id"))
+    @Column(name = "employer_id")
+    private List<UUID> employersIds;
 }

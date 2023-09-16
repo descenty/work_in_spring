@@ -32,6 +32,9 @@ public class VacancyResponse {
     @Column(name = "resume_id", nullable = false)
     private UUID resumeId;
 
+    @Column(name = "user_id", nullable = false)
+    private UUID userId;
+
     private String coverLetter;
 
     @Column(nullable = false)

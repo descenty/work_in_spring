@@ -6,6 +6,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Repository
 public interface CompanyRepository extends JpaRepository<Company, Long> {
@@ -13,7 +14,9 @@ public interface CompanyRepository extends JpaRepository<Company, Long> {
 
     Optional<Company> findByAreaIdAndId(Long areaId, Long id);
 
-    boolean existsByIdAndEmployersEmailsContaining(Long id, String email);
+    boolean existsByIdAndEmployersIdsContaining(Long id, UUID employerId);
+
+    boolean existsByIdAndCreatorId(Long id, UUID creatorId);
 
     Long deleteByAreaIdAndId(Long areaId, Long id);
 }

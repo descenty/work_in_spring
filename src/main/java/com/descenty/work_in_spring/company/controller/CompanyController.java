@@ -8,14 +8,15 @@ import com.descenty.work_in_spring.company.dto.CompanyCreate;
 import com.descenty.work_in_spring.company.dto.CompanyDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.security.Principal;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
@@ -33,10 +34,10 @@ public class CompanyController {
     }
 
     @PostMapping("/areas/{areaId}/companies")
-    @PreAuthorize("hasAuthority('admin') or hasAuthority('employer')")
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<?> create(@PathVariable Long areaId, @Valid @RequestBody CompanyCreate companyCreate,
-            @AuthenticationPrincipal UserDetails userDetails) {
-        Optional<Long> companyId = companyService.create(areaId, companyCreate, userDetails);
+            Principal principal) {
+        Optional<Long> companyId = companyService.create(areaId, companyCreate, UUID.fromString(principal.getName()));
         return companyId.isPresent()
                 ? ResponseEntity.created(ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
                         .buildAndExpand(companyId.get()).toUri()).build()
@@ -44,17 +45,17 @@ public class CompanyController {
     }
 
     @PatchMapping("/companies/{id}")
-    @PreAuthorize("hasAuthority('admin') or hasAuthority('employer')")
+    @PreAuthorize("@companySecurity.isCreator(#id)")
     public ResponseEntity<CompanyDTO> update(@PathVariable Long id, @Valid @RequestBody CompanyCreate companyCreate,
-            @AuthenticationPrincipal UserDetails userDetails) {
-        return companyService.update(id, companyCreate, userDetails).map(ResponseEntity::ok)
+            Principal principal) {
+        return companyService.update(id, companyCreate, UUID.fromString(principal.getName())).map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
     @DeleteMapping("/companies/{id}")
-    @PreAuthorize("hasAuthority('admin') or hasAuthority('employer')")
-    public ResponseEntity<?> delete(@PathVariable Long id, @AuthenticationPrincipal UserDetails userDetails) {
-        return companyService.delete(id, userDetails) ? ResponseEntity.noContent().build()
+    @PreAuthorize("@companySecurity.isCreator(#id)")
+    public ResponseEntity<?> delete(@PathVariable Long id, Principal principal) {
+        return companyService.delete(id, UUID.fromString(principal.getName())) ? ResponseEntity.noContent().build()
                 : ResponseEntity.notFound().build();
     }
 

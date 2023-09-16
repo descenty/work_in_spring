@@ -8,13 +8,12 @@ import com.descenty.work_in_spring.company.CompanyMapper;
 import com.descenty.work_in_spring.company.repository.CompanyRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -32,28 +31,25 @@ public class CompanyService {
     }
 
     @Transactional
-    public Optional<Long> create(Long areaId, CompanyCreate companyCreate, UserDetails userDetails) {
+    public Optional<Long> create(Long areaId, CompanyCreate companyCreate, UUID userId) {
         if (!areaRepository.existsById(areaId))
             return Optional.empty();
         return Optional.of(companyCreate).map(company -> {
             company.setAreaId(areaId);
-            company.setEmployersEmails(Collections.singletonList(userDetails.getUsername()));
+            company.setEmployersIds(Collections.singletonList(userId));
+            company.setCreatorId(userId);
             return companyMapper.toEntity(company);
         }).map(companyRepository::save).map(Company::getId);
     }
 
     @Transactional
-    public Optional<CompanyDTO> update(Long id, CompanyCreate companyCreate, UserDetails userDetails) {
-        if (!companyRepository.existsByIdAndEmployersEmailsContaining(id, userDetails.getUsername()))
-            return Optional.empty();
+    public Optional<CompanyDTO> update(Long id, CompanyCreate companyCreate, UUID employerId) {
         return companyRepository.findById(id).map(company -> companyMapper.update(company, companyCreate))
                 .map(companyRepository::save).map(companyMapper::toDTO);
     }
 
     @Transactional
-    public boolean delete(Long id, UserDetails userDetails) {
-        if (!companyRepository.existsByIdAndEmployersEmailsContaining(id, userDetails.getUsername()))
-            return false;
+    public boolean delete(Long id, UUID employerId) {
         return companyRepository.findById(id).map(area -> {
             companyRepository.delete(area);
             return true;

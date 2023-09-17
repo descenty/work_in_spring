@@ -38,6 +38,6 @@ public class VacancyResponse {
     private String coverLetter;
 
     @Enumerated(EnumType.STRING)
-    @ColumnDefault("'new'")
-    private Status status;
+    @Column(nullable = false)
+    private Status status = Status.PENDING;
 }

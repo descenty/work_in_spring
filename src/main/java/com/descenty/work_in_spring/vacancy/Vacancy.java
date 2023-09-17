@@ -1,10 +1,13 @@
 package com.descenty.work_in_spring.vacancy;
 
 import java.sql.Timestamp;
+import java.util.List;
 import java.util.UUID;
 
 import com.descenty.work_in_spring.area.Area;
 import com.descenty.work_in_spring.company.Company;
+import com.descenty.work_in_spring.user.entity.VacancyResponse;
+
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -43,6 +46,9 @@ public class Vacancy {
 
     @Column(name = "company_id", nullable = true)
     private Long companyId;
+
+    @OneToMany(mappedBy = "vacancy", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<VacancyResponse> responses;
 
     private Boolean isPublished;
     private Boolean isInArchive;

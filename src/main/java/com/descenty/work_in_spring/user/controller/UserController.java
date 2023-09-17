@@ -40,15 +40,23 @@ public class UserController {
         return tokenResponse.isPresent() ? ResponseEntity.ok(tokenResponse.get()) : ResponseEntity.status(401).build();
     }
 
-    @PostMapping("/{userID}/roles")
+    @PostMapping("/{id}/roles")
     @PreAuthorize("hasAuthority('admin')")
-    public ResponseEntity<?> addRoles(@PathVariable UUID userID, @RequestBody Role[] rolesRequest) {
-        return ResponseEntity.ok(userService.addRoles(userID, rolesRequest));
+    public ResponseEntity<?> addRoles(@PathVariable UUID id, @RequestBody Role[] rolesRequest) {
+        return ResponseEntity.ok(userService.addRoles(id, rolesRequest));
     }
 
-    @DeleteMapping("/{userID}/roles")
+    @DeleteMapping("/{id}/roles")
     @PreAuthorize("hasAuthority('admin')")
-    public ResponseEntity<?> removeRoles(@PathVariable UUID userID, @RequestBody Role[] rolesRequest) {
-        return ResponseEntity.ok(userService.removeRoles(userID, rolesRequest));
+    public ResponseEntity<?> removeRoles(@PathVariable UUID id, @RequestBody Role[] rolesRequest) {
+        return ResponseEntity.ok(userService.removeRoles(id, rolesRequest));
+    }
+
+    @DeleteMapping("/{id}")
+    @PreAuthorize("hasAuthority('admin')")
+    public ResponseEntity<?> delete(@PathVariable UUID id) {
+        if (userService.delete(id))
+            return ResponseEntity.noContent().build();
+        return ResponseEntity.notFound().build();
     }
 }

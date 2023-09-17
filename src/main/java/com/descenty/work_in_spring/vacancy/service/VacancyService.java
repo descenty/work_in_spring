@@ -10,7 +10,6 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -74,7 +73,7 @@ public class VacancyService {
         if (!companyRepository.existsByIdAndEmployersIdsContaining(companyId, employerId))
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You are not an employer of this company");
 
-        return vacancyRepository.deleteByCompanyIdAndId(areaId, companyId, id) > 0;
+        return vacancyRepository.deleteByAreaIdAndCompanyIdAndId(areaId, companyId, id) > 0;
     }
 
 }

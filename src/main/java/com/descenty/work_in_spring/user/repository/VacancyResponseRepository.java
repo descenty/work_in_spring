@@ -11,13 +11,13 @@ import com.descenty.work_in_spring.user.entity.VacancyResponse;
 public interface VacancyResponseRepository extends JpaRepository<VacancyResponse, UUID> {
     List<VacancyResponse> findAllByVacancyId(UUID vacancyId);
 
-    List<VacancyResponse> findAllByUserId(UUID userId);
+    List<VacancyResponse> findAllByResume_UserId(UUID userId);
 
-    Optional<VacancyResponse> findByUserIdAndId(UUID userId, UUID id);
+    Optional<VacancyResponse> findByResume_UserIdAndId(UUID userId, UUID id);
 
     Optional<VacancyResponse> findByVacancyIdAndId(UUID vacancyId, UUID id);
 
-    Optional<VacancyResponse> findByVacancyIdAndUserIdAndId(UUID vacancyId, UUID userId, UUID id);
+    Optional<VacancyResponse> findByVacancyIdAndResume_UserIdAndId(UUID vacancyId, UUID userId, UUID id);
 
-    Optional<VacancyResponse> findByAndVacancyIdAndUserId(Long companyId, UUID vacancyId, UUID userId);
+    Optional<VacancyResponse> findByVacancyIdAndResume_UserId(UUID vacancyId, UUID userId);
 }

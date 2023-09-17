@@ -7,6 +7,8 @@ import lombok.Setter;
 import java.util.Date;
 import java.util.UUID;
 
+import com.descenty.work_in_spring.resume.entity.Resume;
+
 @Entity
 @Table(name = "employment")
 @Getter

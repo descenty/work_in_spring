@@ -20,6 +20,6 @@ public interface VacancyRepository extends JpaRepository<Vacancy, UUID> {
 
     boolean existsByCompanyIdAndId(Long companyId, UUID vacancyId);
 
-    Long deleteByCompanyIdAndId(Long areaId, Long companyId, UUID id);
+    Long deleteByAreaIdAndCompanyIdAndId(Long areaId, Long companyId, UUID id);
 
 }

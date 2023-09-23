@@ -1,4 +1,12 @@
 package com.descenty.work_in_spring.user.dto;
 
-public record AuthRequest(String username, String password) {
+import lombok.Builder;
+import lombok.Data;
+
+@Data
+@Builder
+public class AuthRequest {
+    String username;
+    String password;
+    String refreshToken;
 }

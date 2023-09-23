@@ -41,7 +41,6 @@ public class UserService {
 
     private TokenResponse clientAuthentication() {
         WebClient client = WebClient.create();
-
         return client.post().uri(serverURL + "/realms/" + realm + "/protocol/openid-connect/token")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                 .bodyValue("grant_type=client_credentials&client_id=" + clientID + "&client_secret=" + clientSecret)
@@ -51,13 +50,15 @@ public class UserService {
 
     public Optional<TokenResponse> authenticate(AuthRequest authRequest) {
         WebClient client = WebClient.create();
-
         try {
+            String bodyValue = authRequest.getRefreshToken() == null
+                    ? "grant_type=password&username=" + authRequest.getUsername() + "&password=" + authRequest.getPassword()
+                            + "&client_id=" + clientID + "&client_secret=" + clientSecret
+                    : "grant_type=refresh_token&refresh_token=" + authRequest.getRefreshToken() + "&client_id=" + clientID
+                            + "&client_secret=" + clientSecret;
             return Optional.of(client.post().uri(serverURL + "/realms/" + realm + "/protocol/openid-connect/token")
-                    .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                    .bodyValue("grant_type=password&client_id=" + clientID + "&client_secret=" + clientSecret
-                            + "&username=" + authRequest.username() + "&password=" + authRequest.password())
-                    .retrieve().bodyToMono(TokenResponse.class).block());
+                    .contentType(MediaType.APPLICATION_FORM_URLENCODED).bodyValue(bodyValue).retrieve()
+                    .bodyToMono(TokenResponse.class).block());
         } catch (WebClientResponseException e) {
             return Optional.empty();
         }
@@ -65,13 +66,12 @@ public class UserService {
 
     public String createUser(AuthRequest authRequest) {
         WebClient client = WebClient.create();
-
         try {
             URI location = client.post().uri(serverURL + "/admin/realms/" + realm + "/users")
                     .header("Authorization", "Bearer " + clientAuthentication().access_token())
                     .contentType(MediaType.APPLICATION_JSON)
-                    .bodyValue(new OAuth2SignUpRequest(authRequest.username(), true,
-                            new Credential[] { new Credential("password", authRequest.password()) }))
+                    .bodyValue(new OAuth2SignUpRequest(authRequest.getUsername(), true,
+                            new Credential[] { new Credential("password", authRequest.getPassword()) }))
                     .retrieve().toBodilessEntity().block().getHeaders().getLocation();
             if (location != null)
                 return location.toString().split("/")[7];
@@ -86,7 +86,6 @@ public class UserService {
 
     public String addRoles(UUID userID, Role[] roles) {
         WebClient client = WebClient.create();
-
         try {
             client.post().uri(serverURL + "/admin/realms/" + realm + "/users/" + userID + "/role-mappings/realm")
                     .header("Authorization", "Bearer " + clientAuthentication().access_token())
@@ -103,7 +102,6 @@ public class UserService {
 
     public String removeRoles(UUID userID, Role[] roles) {
         WebClient client = WebClient.create();
-
         try {
             client.method(HttpMethod.DELETE)
                     .uri(serverURL + "/admin/realms/" + realm + "/users/" + userID + "/role-mappings/realm")
@@ -122,7 +120,6 @@ public class UserService {
     @Transactional
     public boolean delete(UUID id) {
         WebClient client = WebClient.create();
-
         try {
             client.delete().uri(serverURL + "/admin/realms/" + realm + "/users/" + id)
                     .header("Authorization", "Bearer " + clientAuthentication().access_token()).retrieve()

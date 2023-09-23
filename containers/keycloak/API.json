@@ -1,0 +1,2911 @@
+{
+	"info": {
+		"_postman_id": "7e0f7b97-6b50-4211-b6fc-69e5ccd3a3ee",
+		"name": "API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_uid": "19054329-7e0f7b97-6b50-4211-b6fc-69e5ccd3a3ee"
+	},
+	"item": [
+		{
+			"name": "Тестовые сценарии",
+			"item": [
+				{
+					"name": "Проверка каскада",
+					"item": [
+						{
+							"name": "Авторизация",
+							"item": [
+								{
+									"name": "Администратор",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"id": "ad168ec2-3798-482c-a048-fbc4e520c3dd",
+												"exec": [
+													"testStatus(pm, 200);\r",
+													"\r",
+													"const responseJSON = pm.response.json();\r",
+													"\r",
+													"const roles = JSON.parse(Buffer.from(responseJSON.access_token.split('.')[1], 'base64')).realm_access.roles;\r",
+													"pm.test(\"Has admin role\", pm.expect(roles).includes(\"admin\"));\r",
+													"\r",
+													"pm.globals.set(\"ADMIN_TOKEN\", responseJSON.access_token);"
+												],
+												"type": "text/javascript"
+											}
+										},
+										{
+											"listen": "prerequest",
+											"script": {
+												"id": "ee25f77d-2bf2-4dcc-8560-406d623c9962",
+												"exec": [
+													""
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"id": "90b870b8-2789-4bbf-acb3-02e509c939bd",
+									"protocolProfileBehavior": {
+										"disableBodyPruning": true,
+										"disabledSystemHeaders": {}
+									},
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"username\": \"{{ADMIN_USERNAME}}\",\r\n    \"password\": \"{{ADMIN_PASSWORD}}\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{BASE_URL}}/users/auth",
+											"host": [
+												"{{BASE_URL}}"
+											],
+											"path": [
+												"users",
+												"auth"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Регистрация пользователя",
+									"event": [
+										{
+											"listen": "prerequest",
+											"script": {
+												"id": "7bcef4c3-0491-4d4f-9a7e-a54560a9fe24",
+												"exec": [
+													"pm.globals.set(\"USERNAME\", \"test_user@workin.ru\");\r",
+													"pm.globals.set(\"PASSWORD\", \"qweasdzxc\");"
+												],
+												"type": "text/javascript"
+											}
+										},
+										{
+											"listen": "test",
+											"script": {
+												"id": "7bd84de7-fd99-49be-829e-c3375c58f2c6",
+												"exec": [
+													"testStatus(pm, 201);\r",
+													"\r",
+													"pm.globals.set(\"USER_ID\", getCreatedId(pm));"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"id": "305376b5-19f2-4fbe-ba5f-0b4a571232f6",
+									"protocolProfileBehavior": {
+										"disableBodyPruning": true
+									},
+									"request": {
+										"auth": {
+											"type": "noauth"
+										},
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n  \"username\": \"{{USERNAME}}\",\r\n  \"password\": \"{{PASSWORD}}\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{BASE_URL}}/users",
+											"host": [
+												"{{BASE_URL}}"
+											],
+											"path": [
+												"users"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Пользователь",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"id": "aa51ef9a-e915-42f4-b8da-723c7223d761",
+												"exec": [
+													"testStatus(pm, 200);\r",
+													"\r",
+													"pm.globals.set(\"USER_ACCESS_TOKEN\", pm.response.json().access_token);"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"id": "571502cb-22c0-47d4-b7ef-4ddc99b60fb6",
+									"protocolProfileBehavior": {
+										"disableBodyPruning": true
+									},
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"username\": \"{{USERNAME}}\",\r\n    \"password\": \"{{PASSWORD}}\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{BASE_URL}}/users/auth",
+											"host": [
+												"{{BASE_URL}}"
+											],
+											"path": [
+												"users",
+												"auth"
+											]
+										}
+									},
+									"response": []
+								}
+							],
+							"id": "13085512-d559-4f9e-88f6-0c08fc3e8901"
+						},
+						{
+							"name": "Создание всех сущностей",
+							"item": [
+								{
+									"name": "Регион",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"id": "2f9da635-e80c-44ce-86a0-81200b43389f",
+												"exec": [
+													"testStatus(pm, 201);\r",
+													"\r",
+													"pm.globals.set(\"AREA_ID\", getCreatedId(pm));"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"id": "6b5a4d59-8000-48da-9c0e-07a77ea1b38f",
+									"protocolProfileBehavior": {
+										"disableBodyPruning": true
+									},
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{ADMIN_TOKEN}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"name\": \"Петрозаводск\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{BASE_URL}}/areas",
+											"host": [
+												"{{BASE_URL}}"
+											],
+											"path": [
+												"areas"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Компания",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"id": "694e4469-ec1c-4bb6-aac0-572d7105d175",
+												"exec": [
+													"testStatus(pm, 201);\r",
+													"\r",
+													"pm.globals.set(\"COMPANY_ID\", getCreatedId(pm));"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"id": "e2426755-e228-4c18-9101-09a87bb7e4d8",
+									"protocolProfileBehavior": {
+										"disableBodyPruning": true
+									},
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{ADMIN_TOKEN}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"name\": \"Яндекс\",\r\n    \"description\": \"Крупнейшая IT-компания в России\",\r\n    \"areaId\": \"{{AREA_ID}}\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{BASE_URL}}/areas/{{AREA_ID}}/companies",
+											"host": [
+												"{{BASE_URL}}"
+											],
+											"path": [
+												"areas",
+												"{{AREA_ID}}",
+												"companies"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Вакансия",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"id": "4c106190-bf90-4796-9985-d629b46211fe",
+												"exec": [
+													"testStatus(pm, 201);\r",
+													"\r",
+													"pm.globals.set(\"VACANCY_ID\", getCreatedId(pm));"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"id": "d0697550-057a-459f-94a3-915f23b3a0de",
+									"protocolProfileBehavior": {
+										"disableBodyPruning": true
+									},
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{ADMIN_TOKEN}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"title\": \"Frontend-разработчик\",\r\n    \"description\": \"Разработка веб-приложений на React, Typescript\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{BASE_URL}}/companies/{{COMPANY_ID}}/areas/{{AREA_ID}}/vacancies",
+											"host": [
+												"{{BASE_URL}}"
+											],
+											"path": [
+												"companies",
+												"{{COMPANY_ID}}",
+												"areas",
+												"{{AREA_ID}}",
+												"vacancies"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Резюме",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"id": "92a50ecd-39bf-4efa-817b-804f0bb6378f",
+												"exec": [
+													"testStatus(pm, 201);\r",
+													"\r",
+													"pm.globals.set(\"RESUME_ID\", getCreatedId(pm));"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"id": "5d0a0d90-6db6-489a-9b56-411571cb4189",
+									"protocolProfileBehavior": {
+										"disableBodyPruning": true
+									},
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{USER_ACCESS_TOKEN}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"position\": \"Frontend-разработчик\",\r\n    \"description\": \"Есть опыт разработки на React. Работал в компании Сбер на позиции Middle Frontend-разработчик. Создавал микрофронтенд для платформы СберБизнес\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{BASE_URL}}/users/resumes",
+											"host": [
+												"{{BASE_URL}}"
+											],
+											"path": [
+												"users",
+												"resumes"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Отклик",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"id": "cdd88b34-5d74-4519-82d7-622db147fd14",
+												"exec": [
+													"testStatus(pm, 201);\r",
+													"\r",
+													"pm.globals.set(\"RESPONSE_ID\", getCreatedId(pm));"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"id": "eb30b43b-fa8e-46d9-bb44-76dca91b71b1",
+									"protocolProfileBehavior": {
+										"disableBodyPruning": true
+									},
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{USER_ACCESS_TOKEN}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"resumeId\": \"{{RESUME_ID}}\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{BASE_URL}}/companies/{{COMPANY_ID}}/vacancies/{{VACANCY_ID}}/responses",
+											"host": [
+												"{{BASE_URL}}"
+											],
+											"path": [
+												"companies",
+												"{{COMPANY_ID}}",
+												"vacancies",
+												"{{VACANCY_ID}}",
+												"responses"
+											]
+										}
+									},
+									"response": []
+								}
+							],
+							"id": "9d9a905e-eeff-40bf-bbec-7466d618447b"
+						},
+						{
+							"name": "Каскадное удаление",
+							"item": [
+								{
+									"name": "Удаление региона",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"id": "3db4b789-edb3-47c3-a6f9-ed898ce6d91b",
+												"exec": [
+													"testStatus(pm, 204);"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"id": "f3472ea1-50f8-410a-a47b-8195f1304140",
+									"protocolProfileBehavior": {
+										"disableBodyPruning": true
+									},
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{ADMIN_TOKEN}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "DELETE",
+										"header": [],
+										"url": {
+											"raw": "{{BASE_URL}}/areas/{{AREA_ID}}",
+											"host": [
+												"{{BASE_URL}}"
+											],
+											"path": [
+												"areas",
+												"{{AREA_ID}}"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Проверка региона",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"id": "3533ed80-b141-4084-9b63-1edf4ecd5b7e",
+												"exec": [
+													"testStatus(pm, 404);"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"id": "cef62dc6-fe1b-44c8-a0d9-c71b336d17b0",
+									"protocolProfileBehavior": {
+										"disableBodyPruning": true
+									},
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{BASE_URL}}/areas/{{AREA_ID}}",
+											"host": [
+												"{{BASE_URL}}"
+											],
+											"path": [
+												"areas",
+												"{{AREA_ID}}"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Проверка компании",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"id": "3e0be480-dc42-4144-8667-6dd6e5de0d6c",
+												"exec": [
+													"testStatus(pm, 404);"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"id": "2adb5ec5-6bed-4577-87d9-2994924254c6",
+									"protocolProfileBehavior": {
+										"disableBodyPruning": true
+									},
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{BASE_URL}}/areas/{{AREA_ID}}/companies/{{COMPANY_ID}}",
+											"host": [
+												"{{BASE_URL}}"
+											],
+											"path": [
+												"areas",
+												"{{AREA_ID}}",
+												"companies",
+												"{{COMPANY_ID}}"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Проверка вакансии",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"id": "e36cf564-824a-4634-a600-7aadd8ba8231",
+												"exec": [
+													"testStatus(pm, 404);"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"id": "ae8bc506-0b91-4b71-9635-e573b293965c",
+									"protocolProfileBehavior": {
+										"disableBodyPruning": true
+									},
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{BASE_URL}}/areas/{{AREA_ID}}/companies/{{COMPANY_ID}}/vacancies/{{VACANCY_ID}}",
+											"host": [
+												"{{BASE_URL}}"
+											],
+											"path": [
+												"areas",
+												"{{AREA_ID}}",
+												"companies",
+												"{{COMPANY_ID}}",
+												"vacancies",
+												"{{VACANCY_ID}}"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Проверка отклика",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"id": "c71270cc-0d66-4c06-8a5c-f8db6108a035",
+												"exec": [
+													"testStatus(pm, 404);"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"id": "efef70f5-ef1c-4bdc-a180-ede84db76446",
+									"protocolProfileBehavior": {
+										"disableBodyPruning": true
+									},
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{ADMIN_TOKEN}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{BASE_URL}}/companies/{{COMPANY_ID}}/vacancies/{{VACANCY_ID}}/responses/{{RESPONSE_ID}}",
+											"host": [
+												"{{BASE_URL}}"
+											],
+											"path": [
+												"companies",
+												"{{COMPANY_ID}}",
+												"vacancies",
+												"{{VACANCY_ID}}",
+												"responses",
+												"{{RESPONSE_ID}}"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Удаление пользователя",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"id": "64a4f258-5222-40ba-9575-a72a2e8587d8",
+												"exec": [
+													"testStatus(pm, 204);"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"id": "6770b5cc-83e4-4717-82ea-bb3d5916e0c9",
+									"protocolProfileBehavior": {
+										"disableBodyPruning": true
+									},
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{ADMIN_TOKEN}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "DELETE",
+										"header": [],
+										"url": {
+											"raw": "{{BASE_URL}}/users/{{USER_ID}}",
+											"host": [
+												"{{BASE_URL}}"
+											],
+											"path": [
+												"users",
+												"{{USER_ID}}"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Проверка резюме",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"id": "28af5436-2bbf-433a-8289-f53f28e5b2fd",
+												"exec": [
+													"testStatus(pm, 404);"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"id": "7e302c58-5873-42f1-8a58-a1cdf1f72fcd",
+									"protocolProfileBehavior": {
+										"disableBodyPruning": true
+									},
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{ADMIN_TOKEN}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{BASE_URL}}/users/{{USER_ID}}/resumes/{{RESUME_ID}}",
+											"host": [
+												"{{BASE_URL}}"
+											],
+											"path": [
+												"users",
+												"{{USER_ID}}",
+												"resumes",
+												"{{RESUME_ID}}"
+											]
+										}
+									},
+									"response": []
+								}
+							],
+							"id": "90ab6e40-3332-4a19-93e5-fc05c893f5a8"
+						}
+					],
+					"id": "ef004ff4-61b7-44ac-87da-eb31ff075216",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "ff3ce081-74b1-4199-99f1-8c32dfddbdcc",
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "872a9ffe-46c2-4f9b-8690-e661f1283159",
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						}
+					]
+				},
+				{
+					"name": "Регион",
+					"item": [
+						{
+							"name": "До тестов",
+							"item": [
+								{
+									"name": "Авторизация администратором",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"id": "78137f28-7c9c-45d0-8665-d909ed8d2020",
+												"exec": [
+													"testStatus(pm, 200);\r",
+													"\r",
+													"const responseJSON = pm.response.json();\r",
+													"\r",
+													"const roles = JSON.parse(Buffer.from(responseJSON.access_token.split('.')[1], 'base64')).realm_access.roles;\r",
+													"pm.test(\"Has admin role\", () =>  pm.expect(roles).includes(\"admin\"));\r",
+													"\r",
+													"pm.globals.set(\"ADMIN_TOKEN\", responseJSON.access_token);"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"id": "47a824b3-641c-45e6-b327-7886d24c5365",
+									"protocolProfileBehavior": {
+										"disableBodyPruning": true
+									},
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"username\": \"{{ADMIN_USERNAME}}\",\r\n    \"password\": \"{{ADMIN_PASSWORD}}\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{BASE_URL}}/users/auth",
+											"host": [
+												"{{BASE_URL}}"
+											],
+											"path": [
+												"users",
+												"auth"
+											]
+										}
+									},
+									"response": []
+								}
+							],
+							"id": "be538aa2-061e-40c9-aeb6-3a63e0e44832"
+						},
+						{
+							"name": "CRUD",
+							"item": [
+								{
+									"name": "Создание",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"id": "8b739292-140d-4181-97da-4ba99dd266d3",
+												"exec": [
+													"testStatus(pm, 201);\r",
+													"\r",
+													"pm.globals.set(\"AREA_ID\", getCreatedId(pm));"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"id": "c6f310ff-faf0-43c9-9950-f3904a541434",
+									"protocolProfileBehavior": {
+										"disableBodyPruning": true
+									},
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{ADMIN_TOKEN}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"name\": \"Петрозаводск\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{BASE_URL}}/areas",
+											"host": [
+												"{{BASE_URL}}"
+											],
+											"path": [
+												"areas"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Создание без прав",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"id": "ad2a080c-25ea-4b9b-beb6-6b680e05127e",
+												"exec": [
+													"testStatus(pm, 401);"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"id": "601c1c84-cc80-4c4f-b6fb-fa1b540893bb",
+									"protocolProfileBehavior": {
+										"disableBodyPruning": true
+									},
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"name\": \"Петрозаводск\",\r\n    \"parentId\": 113\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{BASE_URL}}/areas",
+											"host": [
+												"{{BASE_URL}}"
+											],
+											"path": [
+												"areas"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Просмотр списка",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"id": "da6659ca-584c-4a64-b304-85d667e0d353",
+												"exec": [
+													"testStatus(pm, 200);\r",
+													"\r",
+													"testBodyType(pm, \"array\");"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"id": "21d82d5e-2a86-4113-a9bb-1c6e514f49e8",
+									"protocolProfileBehavior": {
+										"disableBodyPruning": true
+									},
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{BASE_URL}}/areas",
+											"host": [
+												"{{BASE_URL}}"
+											],
+											"path": [
+												"areas"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Просмотр одного",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"id": "d75d31df-3c9e-471b-bb66-504874047751",
+												"exec": [
+													"testStatus(pm, 200);\r",
+													"\r",
+													"testBodyType(pm, \"object\");"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"id": "ad61af9b-8610-4217-913d-053795725cf6",
+									"protocolProfileBehavior": {
+										"disableBodyPruning": true
+									},
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{BASE_URL}}/areas/{{AREA_ID}}",
+											"host": [
+												"{{BASE_URL}}"
+											],
+											"path": [
+												"areas",
+												"{{AREA_ID}}"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Частичное редактирование",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"id": "4d3bd2cf-2784-4c32-80cc-903f560933a0",
+												"exec": [
+													"testStatus(pm, 200);\r",
+													"\r",
+													"testBodyType(pm, \"object\");\r",
+													"testBodyField(pm, \"id\", Number.parseInt(pm.globals.get(\"AREA_ID\")));\r",
+													"testBodyField(pm, \"name\", \"Сыктывкар\")"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"id": "f74501d5-e5d1-490c-81dd-e517ebe25948",
+									"protocolProfileBehavior": {
+										"disableBodyPruning": true
+									},
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{ADMIN_TOKEN}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "PATCH",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"name\": \"Сыктывкар\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{BASE_URL}}/areas/{{AREA_ID}}",
+											"host": [
+												"{{BASE_URL}}"
+											],
+											"path": [
+												"areas",
+												"{{AREA_ID}}"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Частичное редактирование без прав",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"id": "18872e1a-9f62-4388-bf8c-3d6b8a61f5bb",
+												"exec": [
+													"testStatus(pm, 401);"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"id": "cf1f54e3-5f14-4756-b823-225a87c5192d",
+									"protocolProfileBehavior": {
+										"disableBodyPruning": true
+									},
+									"request": {
+										"auth": {
+											"type": "noauth"
+										},
+										"method": "PATCH",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"name\": \"Архангельск\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{BASE_URL}}/areas/{{AREA_ID}}",
+											"host": [
+												"{{BASE_URL}}"
+											],
+											"path": [
+												"areas",
+												"{{AREA_ID}}"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Просмотр измененного",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"id": "401563e6-56fa-477e-a13b-974bc42cc04a",
+												"exec": [
+													"testStatus(pm, 200);\r",
+													"\r",
+													"testBodyType(pm, \"object\");\r",
+													"testBodyField(pm, \"name\", \"Сыктывкар\")"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"id": "9ad84cb9-f65b-4502-9f28-52c16d33e7a7",
+									"protocolProfileBehavior": {
+										"disableBodyPruning": true
+									},
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{BASE_URL}}/areas/{{AREA_ID}}",
+											"host": [
+												"{{BASE_URL}}"
+											],
+											"path": [
+												"areas",
+												"{{AREA_ID}}"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Просмотр списка с измененным",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"id": "49d072a9-d891-4cd0-875c-da5a03175165",
+												"exec": [
+													"testStatus(pm, 200);\r",
+													"\r",
+													"testBodyType(pm, \"array\");\r",
+													"testBodyFieldById(pm, pm.globals.get(\"AREA_ID\"), \"name\", \"Сыктывкар\")"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"id": "3dea0f28-7075-4d03-baed-c080212513cf",
+									"protocolProfileBehavior": {
+										"disableBodyPruning": true
+									},
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{BASE_URL}}/areas",
+											"host": [
+												"{{BASE_URL}}"
+											],
+											"path": [
+												"areas"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Полное редактирование",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"id": "d7798d6d-653b-4f0d-89ea-9b6ceb6d4b6e",
+												"exec": [
+													"testStatus(pm, 200);\r",
+													"\r",
+													"testBodyType(pm, \"object\");\r",
+													"testBodyField(pm, \"id\", pm.globals.get(\"AREA_ID\"));\r",
+													"testBodyField(pm, \"name\", \"Ярославль\")"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"id": "7078a978-ded4-4580-af0e-768f86f3aecb",
+									"protocolProfileBehavior": {
+										"disableBodyPruning": true
+									},
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{ADMIN_TOKEN}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "PUT",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"name\": \"Ярославль\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{BASE_URL}}/areas/{{AREA_ID}}",
+											"host": [
+												"{{BASE_URL}}"
+											],
+											"path": [
+												"areas",
+												"{{AREA_ID}}"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Полное редактирование без прав",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"id": "7131875f-f7ca-4f53-a03f-5e6e4846d3ef",
+												"exec": [
+													"testStatus(pm, 401);"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"id": "63799b96-d0b6-47fc-a8c0-4ffd1193bcd2",
+									"protocolProfileBehavior": {
+										"disableBodyPruning": true
+									},
+									"request": {
+										"auth": {
+											"type": "noauth"
+										},
+										"method": "PUT",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"name\": \"Архангельск\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{BASE_URL}}/areas/{{AREA_ID}}",
+											"host": [
+												"{{BASE_URL}}"
+											],
+											"path": [
+												"areas",
+												"{{AREA_ID}}"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Просмотр измененного",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"id": "22b32442-5217-41e7-a381-763d603bb0db",
+												"exec": [
+													"testStatus(pm, 200);\r",
+													"\r",
+													"testBodyType(pm, \"object\");\r",
+													"testBodyField(pm, \"name\", \"Ярославль\");"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"id": "a3733b97-9d77-4064-9dc2-ec60cad65710",
+									"protocolProfileBehavior": {
+										"disableBodyPruning": true
+									},
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{BASE_URL}}/areas/{{AREA_ID}}",
+											"host": [
+												"{{BASE_URL}}"
+											],
+											"path": [
+												"areas",
+												"{{AREA_ID}}"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Просмотр списка с измененным",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"id": "689ac6e5-f668-4ea0-b4a9-04b3ccf0a493",
+												"exec": [
+													"testStatus(pm, 200);\r",
+													"\r",
+													"testBodyType(pm, \"array\");\r",
+													"testBodyFieldById(pm, pm.globals.get(\"AREA_ID\"), \"name\", \"Ярославль\")"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"id": "e3a1c3e1-b4ee-492b-8dfb-99a448a4fbf1",
+									"protocolProfileBehavior": {
+										"disableBodyPruning": true
+									},
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{BASE_URL}}/areas",
+											"host": [
+												"{{BASE_URL}}"
+											],
+											"path": [
+												"areas"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Удаление",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"id": "527dd01a-3685-4763-8f9d-5ddd8adfe1e9",
+												"exec": [
+													"testStatus(pm, 204);"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"id": "35318f7a-c243-4aef-9497-af3abf394157",
+									"protocolProfileBehavior": {
+										"disableBodyPruning": true
+									},
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{ADMIN_TOKEN}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "DELETE",
+										"header": [],
+										"url": {
+											"raw": "{{BASE_URL}}/areas/{{AREA_ID}}",
+											"host": [
+												"{{BASE_URL}}"
+											],
+											"path": [
+												"areas",
+												"{{AREA_ID}}"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Удаление без прав",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"id": "caf67a59-3a03-4552-b175-1502f09f893b",
+												"exec": [
+													"testStatus(pm, 401);"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"id": "2ccc3927-4e12-4527-b458-eabf068391fa",
+									"protocolProfileBehavior": {
+										"disableBodyPruning": true
+									},
+									"request": {
+										"method": "DELETE",
+										"header": [],
+										"url": {
+											"raw": "{{BASE_URL}}/areas/{{AREA_ID}}",
+											"host": [
+												"{{BASE_URL}}"
+											],
+											"path": [
+												"areas",
+												"{{AREA_ID}}"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Просмотр удаленного",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"id": "af320ac1-09e4-4654-9c83-377f6fc4ff25",
+												"exec": [
+													"testStatus(pm, 404);"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"id": "a136f6f1-3df1-40e5-8428-864e6eab8dcd",
+									"protocolProfileBehavior": {
+										"disableBodyPruning": true
+									},
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{BASE_URL}}/areas/{{AREA_ID}}",
+											"host": [
+												"{{BASE_URL}}"
+											],
+											"path": [
+												"areas",
+												"{{AREA_ID}}"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Просмотр списка с удаленным",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"id": "a5de9a01-a165-441a-83ff-226dc3c49818",
+												"exec": [
+													"testStatus(pm, 200);\r",
+													"\r",
+													"testBodyObjectNotExistsById(pm, pm.globals.get(\"AREA_ID\"));"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"id": "8ca66e21-b06f-4318-949c-be1e7cd905f1",
+									"protocolProfileBehavior": {
+										"disableBodyPruning": true
+									},
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{BASE_URL}}/areas",
+											"host": [
+												"{{BASE_URL}}"
+											],
+											"path": [
+												"areas"
+											]
+										}
+									},
+									"response": []
+								}
+							],
+							"id": "1fc83eb4-558e-4f81-b620-af8bdf25a61a"
+						}
+					],
+					"id": "c21dd6f8-d92c-488b-8047-c6d4292117c3"
+				},
+				{
+					"name": "Компания",
+					"item": [
+						{
+							"name": "До тестов",
+							"item": [
+								{
+									"name": "Авторизация администратора",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"id": "38f07116-91f2-4dbe-96f6-e638241b5fbc",
+												"exec": [
+													"testStatus(pm, 200);\r",
+													"\r",
+													"const responseJSON = pm.response.json();\r",
+													"\r",
+													"const roles = JSON.parse(Buffer.from(responseJSON.access_token.split('.')[1], 'base64')).realm_access.roles;\r",
+													"pm.test(\"Has admin role\", () =>  pm.expect(roles).includes(\"admin\"));\r",
+													"\r",
+													"pm.globals.set(\"ADMIN_TOKEN\", responseJSON.access_token);"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"id": "886c16a1-478b-4772-8ea6-7f023ae06730",
+									"protocolProfileBehavior": {
+										"disableBodyPruning": true
+									},
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"username\": \"{{ADMIN_USERNAME}}\",\r\n    \"password\": \"{{ADMIN_PASSWORD}}\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{BASE_URL}}/users/auth",
+											"host": [
+												"{{BASE_URL}}"
+											],
+											"path": [
+												"users",
+												"auth"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Создание региона",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"id": "75968c51-352d-4ea0-85b6-0e5cd28f531f",
+												"exec": [
+													"testStatus(pm, 201);\r",
+													"\r",
+													"pm.globals.set(\"AREA_ID\", getCreatedId(pm));"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"id": "46337708-2ecc-4aec-a0ce-30d42c3eaefd",
+									"protocolProfileBehavior": {
+										"disableBodyPruning": true
+									},
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{ADMIN_TOKEN}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"name\": \"Петрозаводск\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{BASE_URL}}/areas",
+											"host": [
+												"{{BASE_URL}}"
+											],
+											"path": [
+												"areas"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Регистрация пользователя",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"id": "88dd368d-31a9-4237-990e-570bf1682edd",
+												"exec": [
+													"testStatus(pm, 201);\r",
+													"\r",
+													"pm.globals.set(\"USER_ID\", getCreatedId(pm));"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"id": "5d393d32-0d41-43db-9a67-8068f63d4b5c",
+									"protocolProfileBehavior": {
+										"disableBodyPruning": true
+									},
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n  \"username\": \"{{USERNAME}}\",\r\n  \"password\": \"{{PASSWORD}}\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{BASE_URL}}/users",
+											"host": [
+												"{{BASE_URL}}"
+											],
+											"path": [
+												"users"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Авторизация пользователя",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"id": "9b8cc5cd-1a25-4c4f-b74d-c54db2d39d9f",
+												"exec": [
+													"testStatus(pm, 200);\r",
+													"\r",
+													"pm.globals.set(\"USER_ACCESS_TOKEN\", pm.response.json().access_token);"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"id": "e8298ee7-6ceb-4b36-83c9-ad6fff4fa5ff",
+									"protocolProfileBehavior": {
+										"disableBodyPruning": true
+									},
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"username\": \"{{USERNAME}}\",\r\n    \"password\": \"{{PASSWORD}}\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{BASE_URL}}/users/auth",
+											"host": [
+												"{{BASE_URL}}"
+											],
+											"path": [
+												"users",
+												"auth"
+											]
+										}
+									},
+									"response": []
+								}
+							],
+							"id": "c7ed7d13-2e8a-45f9-a47f-b2aade57f9ba"
+						},
+						{
+							"name": "CRUD",
+							"item": [
+								{
+									"name": "Создание",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"id": "efe14d84-ff51-41d7-bca9-1cfe3d23da2c",
+												"exec": [
+													"testStatus(pm, 201);\r",
+													"\r",
+													"pm.globals.set(\"COMPANY_ID\", getCreatedId(pm));"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"id": "1d770dc9-5a9e-4de7-9d4c-1c074aee3840",
+									"protocolProfileBehavior": {
+										"disableBodyPruning": true
+									},
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{USER_ACCESS_TOKEN}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"name\": \"Яндекс\",\r\n    \"description\": \"Крупнейшая IT-компания в России\",\r\n    \"areaId\": {{AREA_ID}}\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{BASE_URL}}/areas/{{AREA_ID}}/companies",
+											"host": [
+												"{{BASE_URL}}"
+											],
+											"path": [
+												"areas",
+												"{{AREA_ID}}",
+												"companies"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Создание без прав",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"id": "43fc116f-1519-4dfe-82a4-07a824eb1794",
+												"exec": [
+													"testStatus(pm, 401);"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"id": "2a837974-d34a-4e62-9ff5-9a83c584fa0f",
+									"protocolProfileBehavior": {
+										"disableBodyPruning": true
+									},
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"name\": \"Новатэк\",\r\n    \"description\": \"Компания, занимающаяся добычей природного газ\",\r\n    \"areaId\": {{AREA_ID}}\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{BASE_URL}}/areas/{{AREA_ID}}/companies",
+											"host": [
+												"{{BASE_URL}}"
+											],
+											"path": [
+												"areas",
+												"{{AREA_ID}}",
+												"companies"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Просмотр списка",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"id": "f2212a43-9b14-4967-8251-a459a491e65a",
+												"exec": [
+													"testStatus(pm, 200);\r",
+													"\r",
+													"testBodyType(pm, \"array\");"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"id": "1e25d967-1235-4ae3-b5e0-87aa714d031e",
+									"protocolProfileBehavior": {
+										"disableBodyPruning": true
+									},
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{BASE_URL}}/areas/{{AREA_ID}}/companies",
+											"host": [
+												"{{BASE_URL}}"
+											],
+											"path": [
+												"areas",
+												"{{AREA_ID}}",
+												"companies"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Просмотр одного",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"id": "10e353ff-d927-40a4-a720-588a691c042c",
+												"exec": [
+													"testStatus(pm, 200);\r",
+													"\r",
+													"testBodyType(pm, \"object\");"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"id": "9e418aa4-c83e-4e0e-9293-b67d3be6361e",
+									"protocolProfileBehavior": {
+										"disableBodyPruning": true
+									},
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{BASE_URL}}/areas/{{AREA_ID}}/companies/{{COMPANY_ID}}",
+											"host": [
+												"{{BASE_URL}}"
+											],
+											"path": [
+												"areas",
+												"{{AREA_ID}}",
+												"companies",
+												"{{COMPANY_ID}}"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Частичное редактирование",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"id": "a9a2d755-ed03-45b0-8f49-c99527f1a286",
+												"exec": [
+													"testStatus(pm, 200);\r",
+													"\r",
+													"testBodyType(pm, \"object\");\r",
+													"testBodyField(pm, \"id\", Number.parseInt(pm.globals.get(\"COMPANY_ID\")));\r",
+													"testBodyField(pm, \"name\", \"Сбер\")"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"id": "e97feda8-092e-416b-add3-fd90ca765011",
+									"protocolProfileBehavior": {
+										"disableBodyPruning": true
+									},
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{USER_ACCESS_TOKEN}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "PATCH",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"name\": \"VK\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{BASE_URL}}/areas/{{AREA_ID}}/companies/{{COMPANY_ID}}",
+											"host": [
+												"{{BASE_URL}}"
+											],
+											"path": [
+												"areas",
+												"{{AREA_ID}}",
+												"companies",
+												"{{COMPANY_ID}}"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Частичное редактирование без прав",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"id": "92b0c7de-7e5e-4b0e-b046-daeb438a0095",
+												"exec": [
+													"testStatus(pm, 401);"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"id": "f81436e5-5f72-4ae9-b920-5f24f15141cf",
+									"protocolProfileBehavior": {
+										"disableBodyPruning": true
+									},
+									"request": {
+										"method": "PATCH",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"name\": \"Ланит\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{BASE_URL}}/areas/{{AREA_ID}}/companies/{{COMPANY_ID}}",
+											"host": [
+												"{{BASE_URL}}"
+											],
+											"path": [
+												"areas",
+												"{{AREA_ID}}",
+												"companies",
+												"{{COMPANY_ID}}"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Просмотр измененной",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"id": "d5aeeb18-16a7-44f1-b5e9-b7821d74b231",
+												"exec": [
+													"testStatus(pm, 200);\r",
+													"\r",
+													"testBodyType(pm, \"object\");\r",
+													"testBodyField(pm, \"name\", \"VK\");"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"id": "cdbed2bc-7bb1-42ff-a3b7-4ce224380b60",
+									"protocolProfileBehavior": {
+										"disableBodyPruning": true
+									},
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{BASE_URL}}/areas/{{AREA_ID}}/companies/{{COMPANY_ID}}",
+											"host": [
+												"{{BASE_URL}}"
+											],
+											"path": [
+												"areas",
+												"{{AREA_ID}}",
+												"companies",
+												"{{COMPANY_ID}}"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Просмотр списка с измененной",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"id": "2369deb2-b877-450d-893e-68062bee089f",
+												"exec": [
+													"testStatus(pm, 200);\r",
+													"\r",
+													"testBodyType(pm, \"array\");\r",
+													"testBodyFieldById(pm, pm.globals.get(\"AREA_ID\"), \"name\", \"VK\")"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"id": "f39b75b5-3685-4d98-a66d-5acb2ccad9fe",
+									"protocolProfileBehavior": {
+										"disableBodyPruning": true
+									},
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{BASE_URL}}/areas/{{AREA_ID}}/companies",
+											"host": [
+												"{{BASE_URL}}"
+											],
+											"path": [
+												"areas",
+												"{{AREA_ID}}",
+												"companies"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Полное редактирование",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"id": "f99535b8-7418-4f66-908a-bf04b8663d41",
+												"exec": [
+													"testStatus(pm, 200);\r",
+													"\r",
+													"testBodyType(pm, \"object\");\r",
+													"testBodyField(pm, \"id\", pm.globals.get(\"AREA_ID\"));\r",
+													"testBodyField(pm, \"name\", \"Ярославль\")"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"id": "616f9aed-5320-4dc7-b163-d7feb25909f9",
+									"protocolProfileBehavior": {
+										"disableBodyPruning": true
+									},
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{USER_ACCESS_TOKEN}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "PUT",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"name\": \"Газпром\",\r\n    \"description\": \"Российская транснациональная энергетическая компания\",\r\n    \"areaId\": {{AREA_ID}}\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{BASE_URL}}/areas/{{AREA_ID}}/companies/{{COMPANY_ID}}",
+											"host": [
+												"{{BASE_URL}}"
+											],
+											"path": [
+												"areas",
+												"{{AREA_ID}}",
+												"companies",
+												"{{COMPANY_ID}}"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Полное редактирование без прав",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"id": "ee3d8bd0-0a45-4f23-81aa-30eb8207db76",
+												"exec": [
+													"testStatus(pm, 401)"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"id": "089bb752-0648-4232-925b-db9d81db34ad",
+									"protocolProfileBehavior": {
+										"disableBodyPruning": true
+									},
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{USER_ACCESS_TOKEN}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "PUT",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"name\": \"Новатэк\",\r\n    \"description\": \"Компания, занимающаяся добычей природного газ\",\r\n    \"areaId\": {{AREA_ID}}\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{BASE_URL}}/areas/{{AREA_ID}}/companies/{{COMPANY_ID}}",
+											"host": [
+												"{{BASE_URL}}"
+											],
+											"path": [
+												"areas",
+												"{{AREA_ID}}",
+												"companies",
+												"{{COMPANY_ID}}"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Просмотр измененной",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"id": "f711c155-a22a-481e-b89c-416289f0255b",
+												"exec": [
+													"testStatus(pm, 200);\r",
+													"\r",
+													"testBodyType(pm, \"object\");\r",
+													"testBodyField(pm, \"name\", \"Газпром\");"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"id": "30c17669-a045-4510-afec-504e06f194d2",
+									"protocolProfileBehavior": {
+										"disableBodyPruning": true
+									},
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{BASE_URL}}/areas/{{AREA_ID}}/companies/{{COMPANY_ID}}",
+											"host": [
+												"{{BASE_URL}}"
+											],
+											"path": [
+												"areas",
+												"{{AREA_ID}}",
+												"companies",
+												"{{COMPANY_ID}}"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Просмотр списка с измененной",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"id": "e88c900c-5e42-4b11-90c8-1ea8cd193ae6",
+												"exec": [
+													"testStatus(pm, 200);\r",
+													"\r",
+													"testBodyType(pm, \"array\");\r",
+													"testBodyFieldById(pm, pm.globals.get(\"COMPANY_ID\"), \"name\", \"Газпром\");"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"id": "b9b87254-a67d-439b-9f43-48da3ca10a62",
+									"protocolProfileBehavior": {
+										"disableBodyPruning": true
+									},
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{BASE_URL}}/areas/{{AREA_ID}}/companies/{{COMPANY_ID}}",
+											"host": [
+												"{{BASE_URL}}"
+											],
+											"path": [
+												"areas",
+												"{{AREA_ID}}",
+												"companies",
+												"{{COMPANY_ID}}"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Удаление",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"id": "919786c1-1088-4833-ab5b-a1109210db6f",
+												"exec": [
+													"testStatus(pm, 204);"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"id": "b4f43b2b-a4c7-4287-ac7c-6a723b2a2938",
+									"protocolProfileBehavior": {
+										"disableBodyPruning": true
+									},
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{USER_ACCESS_TOKEN}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "DELETE",
+										"header": [],
+										"url": {
+											"raw": "{{BASE_URL}}/areas/{{AREA_ID}}/companies/{{COMPANY_ID}}",
+											"host": [
+												"{{BASE_URL}}"
+											],
+											"path": [
+												"areas",
+												"{{AREA_ID}}",
+												"companies",
+												"{{COMPANY_ID}}"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Удаление без прав",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"id": "3dd19943-8fe6-42cd-ba61-45685d0a6493",
+												"exec": [
+													"testStatus(pm, 401);"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"id": "58ac9a23-e457-4b4a-9b1d-9a87a3b5ba0f",
+									"protocolProfileBehavior": {
+										"disableBodyPruning": true
+									},
+									"request": {
+										"method": "DELETE",
+										"header": [],
+										"url": {
+											"raw": "{{BASE_URL}}/areas/{{AREA_ID}}/companies/{{COMPANY_ID}}",
+											"host": [
+												"{{BASE_URL}}"
+											],
+											"path": [
+												"areas",
+												"{{AREA_ID}}",
+												"companies",
+												"{{COMPANY_ID}}"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Просмотр удаленной",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"id": "5218fd7e-6400-4798-b477-beb41bae361c",
+												"exec": [
+													"testStatus(pm, 404);"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"id": "6b26e231-e288-4f12-88c7-df89f11016b3",
+									"protocolProfileBehavior": {
+										"disableBodyPruning": true
+									},
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{BASE_URL}}/areas/{{AREA_ID}}/companies/{{COMPANY_ID}}",
+											"host": [
+												"{{BASE_URL}}"
+											],
+											"path": [
+												"areas",
+												"{{AREA_ID}}",
+												"companies",
+												"{{COMPANY_ID}}"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Просмотр списка с удаленной",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"id": "d0b54509-b246-4afa-a75d-98e0028407e1",
+												"exec": [
+													"testStatus(pm, 200);\r",
+													"\r",
+													"testBodyObjectNotExistsById(pm, pm.globals.get(\"COMPANY_ID\"));"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"id": "cc2cc6e6-b49a-425f-953e-fc9f1dfe0f56",
+									"protocolProfileBehavior": {
+										"disableBodyPruning": true
+									},
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{BASE_URL}}/areas/{{AREA_ID}}/companies",
+											"host": [
+												"{{BASE_URL}}"
+											],
+											"path": [
+												"areas",
+												"{{AREA_ID}}",
+												"companies"
+											]
+										}
+									},
+									"response": []
+								}
+							],
+							"id": "27d9b38c-6106-4266-8f16-9cea38cfbf57"
+						},
+						{
+							"name": "После тестов",
+							"item": [
+								{
+									"name": "Удаление региона",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"id": "644c5563-b3bb-4a56-9970-b028c7ec578e",
+												"exec": [
+													"testStatus(pm, 204);"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"id": "85ab0929-06ef-4ccd-baf3-7cb423d99212",
+									"protocolProfileBehavior": {
+										"disableBodyPruning": true
+									},
+									"request": {
+										"method": "DELETE",
+										"header": [],
+										"url": {
+											"raw": "{{BASE_URL}}/areas/{{AREA_ID}}",
+											"host": [
+												"{{BASE_URL}}"
+											],
+											"path": [
+												"areas",
+												"{{AREA_ID}}"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Удаление пользователя",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"id": "0aec520e-f1b1-483c-b5f5-50cc0b2fd72c",
+												"exec": [
+													"testStatus(pm, 204);"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"id": "a3acd979-a28e-4da0-a639-3586cfec5a6d",
+									"protocolProfileBehavior": {
+										"disableBodyPruning": true
+									},
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{ADMIN_TOKEN}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "DELETE",
+										"header": [],
+										"url": {
+											"raw": "{{BASE_URL}}/users/{{USER_ID}}",
+											"host": [
+												"{{BASE_URL}}"
+											],
+											"path": [
+												"users",
+												"{{USER_ID}}"
+											]
+										}
+									},
+									"response": []
+								}
+							],
+							"id": "1893ed1a-171f-48c4-aaae-bd97ae713a38"
+						}
+					],
+					"id": "c5b45181-4fac-4788-bd20-0915d6568e4f"
+				},
+				{
+					"name": "Вакансия",
+					"item": [
+						{
+							"name": "До тестов",
+							"item": [
+								{
+									"name": "Авторизация администратора",
+									"id": "e11256fa-e803-4f81-95eb-6488fe5bc722",
+									"protocolProfileBehavior": {
+										"disableBodyPruning": true
+									},
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": ""
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Создание региона",
+									"id": "4db7eb38-39b8-4d66-a9f1-16f894d53848",
+									"protocolProfileBehavior": {
+										"disableBodyPruning": true
+									},
+									"request": {
+										"method": "POST",
+										"header": [],
+										"url": {
+											"raw": ""
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Создание компании",
+									"id": "22ae0772-d47b-4a23-a9e6-ac737d6147c1",
+									"protocolProfileBehavior": {
+										"disableBodyPruning": true
+									},
+									"request": {
+										"method": "POST",
+										"header": [],
+										"url": {
+											"raw": ""
+										}
+									},
+									"response": []
+								}
+							],
+							"id": "0a793b03-ba0b-437d-8067-bec8f173ef24"
+						},
+						{
+							"name": "CRUD",
+							"item": [
+								{
+									"name": "Создание",
+									"id": "308e15a7-ce49-4bd6-a51c-f5646b0667bb",
+									"protocolProfileBehavior": {
+										"disableBodyPruning": true
+									},
+									"request": {
+										"method": "POST",
+										"header": [],
+										"url": {
+											"raw": ""
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Создание без прав",
+									"id": "530c9351-90c9-4df4-a47e-a0185fa31985",
+									"protocolProfileBehavior": {
+										"disableBodyPruning": true
+									},
+									"request": {
+										"method": "POST",
+										"header": [],
+										"url": {
+											"raw": ""
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Просмотр списка",
+									"id": "cc3717a6-2599-49b3-81be-737f9a9b1d5a",
+									"protocolProfileBehavior": {
+										"disableBodyPruning": true
+									},
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": ""
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Просмотр одного",
+									"id": "5d180146-1c2c-4a1a-8665-13e6d9d1ca7e",
+									"protocolProfileBehavior": {
+										"disableBodyPruning": true
+									},
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": ""
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Частичное редактирование",
+									"id": "8bffa82e-7e82-498b-be78-5951ec651fa3",
+									"protocolProfileBehavior": {
+										"disableBodyPruning": true
+									},
+									"request": {
+										"method": "PATCH",
+										"header": [],
+										"url": {
+											"raw": ""
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Частичное редактирование без прав",
+									"id": "88cf563f-8eaf-41bd-aa55-6aca0dd40f43",
+									"protocolProfileBehavior": {
+										"disableBodyPruning": true
+									},
+									"request": {
+										"method": "PATCH",
+										"header": [],
+										"url": {
+											"raw": ""
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Просмотр измененной",
+									"id": "1324f284-932e-4e78-891e-3441051f733e",
+									"protocolProfileBehavior": {
+										"disableBodyPruning": true
+									},
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": ""
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Просмотр списка с измененной",
+									"id": "1f7ec8e9-3fa0-48ab-9158-cbec7a9354e1",
+									"protocolProfileBehavior": {
+										"disableBodyPruning": true
+									},
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": ""
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Полное редактирование",
+									"id": "6a1999b1-2c9d-402f-9c55-6847074877ea",
+									"protocolProfileBehavior": {
+										"disableBodyPruning": true
+									},
+									"request": {
+										"method": "PUT",
+										"header": [],
+										"url": {
+											"raw": ""
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Полное редактирование без прав",
+									"id": "40519d86-2a19-4d42-9459-7383968004f4",
+									"protocolProfileBehavior": {
+										"disableBodyPruning": true
+									},
+									"request": {
+										"method": "PUT",
+										"header": [],
+										"url": {
+											"raw": ""
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Просмотр измененной",
+									"id": "6187837f-cfda-4826-8c84-6f313126d5fe",
+									"protocolProfileBehavior": {
+										"disableBodyPruning": true
+									},
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": ""
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Просмотр списка с измененной",
+									"id": "932fa35a-35e7-4734-ac80-cc284a6142e1",
+									"protocolProfileBehavior": {
+										"disableBodyPruning": true
+									},
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": ""
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Удаление",
+									"id": "9e52fcbc-54e8-4dd0-aa94-58511f3a37d7",
+									"protocolProfileBehavior": {
+										"disableBodyPruning": true
+									},
+									"request": {
+										"method": "DELETE",
+										"header": [],
+										"url": {
+											"raw": ""
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Удаление без прав",
+									"id": "50c5ad6e-c464-4d75-b711-ae8ae0b27e78",
+									"protocolProfileBehavior": {
+										"disableBodyPruning": true
+									},
+									"request": {
+										"method": "DELETE",
+										"header": [],
+										"url": {
+											"raw": ""
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Просмотр удаленной",
+									"id": "663e25c3-d09d-48c2-8c90-054c7d982ed2",
+									"protocolProfileBehavior": {
+										"disableBodyPruning": true
+									},
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": ""
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Просмотр списка с удаленной",
+									"id": "478ace86-6f0f-4ab5-9e1d-39dc9b837dec",
+									"protocolProfileBehavior": {
+										"disableBodyPruning": true
+									},
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": ""
+										}
+									},
+									"response": []
+								}
+							],
+							"id": "aaec0006-be7b-473f-ab46-4885b719933d"
+						},
+						{
+							"name": "После тестов",
+							"item": [
+								{
+									"name": "Удаление региона",
+									"id": "d0199dde-144f-450a-8a9b-c12bdccfde48",
+									"protocolProfileBehavior": {
+										"disableBodyPruning": true
+									},
+									"request": {
+										"method": "DELETE",
+										"header": [],
+										"url": {
+											"raw": ""
+										}
+									},
+									"response": []
+								}
+							],
+							"id": "6e4824a8-1d82-4210-9f74-447cf9e6279c"
+						}
+					],
+					"id": "2636c17f-7381-4b4b-8ab9-9f2446f4f38a"
+				},
+				{
+					"name": "Резюме",
+					"item": [
+						{
+							"name": "CRUD для Образования",
+							"item": [],
+							"id": "da2d8ff2-8bd6-4648-b0de-a58ad5c22f35"
+						},
+						{
+							"name": "CRUD для Места работы",
+							"item": [],
+							"id": "dbca80c7-969d-4985-858e-f9693064a196"
+						}
+					],
+					"id": "80b96fc8-8e5e-441b-89db-19e52fe110b2"
+				},
+				{
+					"name": "Отклик",
+					"item": [],
+					"id": "dc4c6926-205f-4f94-af24-8fbfb4bebcc0"
+				},
+				{
+					"name": "Пользователь",
+					"item": [],
+					"id": "f29db0e5-5faa-4198-84c7-6e150acb3e0a"
+				}
+			],
+			"id": "b7385f3a-9628-442c-b820-ddc095d1b97c"
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "0cfb8638-63ee-491f-970f-0465ecad3b2d",
+				"type": "text/javascript",
+				"exec": [
+					"testStatus = (pm, status) => pm.test(`Status ${status}`, pm.response.to.have.status(status));",
+					"testBodyType = (pm, type) => pm.test(`Response Body is an ${type.toUpperCase()}`, pm.expect(pm.response.json()).to.be.an(type));",
+					"testBodyField = (pm, field, value) => pm.test(`${field.toUpperCase()} is correct`, pm.expect(pm.response.json()[field]).to.equal(value));",
+					"testBodyFieldById = (pm, id, field, value) => pm.test(`${field.toUpperCase()} is correct`, pm.expect(pm.response.json().filter(obj => obj.id == id)[0][field]).to.equal(value));",
+					"testBodyObjectExistsById = (pm, id) => pm.test(\"Object not found\", pm.expect(pm.response.json().filter(obj => obj.id == id).length).to.not.equal(0));",
+					"testBodyObjectNotExistsById = (pm, id) => pm.test(\"Object not found\", pm.expect(pm.response.json().filter(obj => obj.id == id).length).to.equal(0));",
+					"",
+					"getCreatedId = (pm) => {",
+					"    const location = pm.response.headers.get(\"Location\");",
+					"    return location.substring(location.lastIndexOf('/') + 1);",
+					"}"
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "b00c0e0b-061c-4e39-8e6a-4b5bd5129b3c",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}

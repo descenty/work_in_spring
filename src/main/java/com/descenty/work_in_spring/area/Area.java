@@ -3,6 +3,7 @@ package com.descenty.work_in_spring.area;
 import java.util.List;
 
 import com.descenty.work_in_spring.company.Company;
+import com.descenty.work_in_spring.resume.entity.Resume;
 
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -15,11 +16,11 @@ public class Area {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     private String name;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = true)
-    @JoinColumn(name = "parent_id", insertable = false, updatable = false)
+    @JoinColumn(name = "parent_id", updatable = false, insertable = false)
     private Area parent;
 
     @Column(name = "parent_id", nullable = true)

@@ -15,7 +15,5 @@ public class ResumeCreate {
     @NotEmpty
     String description;
     Integer salary;
-    @NotNull
-    Long areaId;
     UUID userId;
 }

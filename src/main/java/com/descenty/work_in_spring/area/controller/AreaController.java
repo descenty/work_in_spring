@@ -48,8 +48,15 @@ public class AreaController {
 
     @PatchMapping("/{id}")
     @PreAuthorize("hasAuthority('admin')")
+    public ResponseEntity<AreaDTO> partialUpdate(@PathVariable Long id, @Valid @RequestBody AreaCreate areaCreate) {
+        return areaService.partialUpdate(id, areaCreate).map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    @PutMapping("/{id}")
+    @PreAuthorize("hasAuthority('admin')")
     public ResponseEntity<AreaDTO> update(@PathVariable Long id, @Valid @RequestBody AreaCreate areaCreate) {
-        return areaService.update(id, areaCreate).map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
+        return ResponseEntity.ok(areaService.update(id, areaCreate));
     }
 
     @DeleteMapping("/{id}")

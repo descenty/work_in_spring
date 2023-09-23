@@ -24,11 +24,11 @@ services:
       KC_DB_PASSWORD: ${POSTGRES_PASSWORD}
       KEYCLOAK_ADMIN: ${KEYCLOAK_ADMIN}
       KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD}
-      KC_HOSTNAME: ${KC_HOST}
       KC_HTTPS_CERTIFICATE_FILE: /opt/keycloak/conf/certs/tls.crt
       KC_HTTPS_CERTIFICATE_KEY_FILE: /opt/keycloak/conf/certs/tls.key
     healthcheck:
-      test: [ "CMD", "curl", "--head","fsS", "https://keycloak:8443/health/ready" ]
+      test:
+        ["CMD", "curl", "--head", "fsS", "https://keycloak:8443/health/ready"]
       interval: 5s
       timeout: 2s
       retries: 15
@@ -39,8 +39,8 @@ services:
     container_name: work-in-redis
     command: >
       --requirepass ${REDIS_PASSWORD}
-    ports:
-      - 6379:6379
+    expose:
+      - 6379
     environment:
       - TZ=Europe/Moscow
     volumes:

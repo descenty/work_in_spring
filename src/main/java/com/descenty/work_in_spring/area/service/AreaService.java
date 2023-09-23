@@ -12,12 +12,14 @@ import org.springframework.stereotype.Service;
 import com.descenty.work_in_spring.area.repository.AreaRepository;
 
 import lombok.RequiredArgsConstructor;
+import reactor.core.publisher.Mono;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 @Service
 @RequiredArgsConstructor
@@ -60,9 +62,17 @@ public class AreaService {
     }
 
     @Transactional
-    public Optional<AreaDTO> update(Long id, AreaCreate areaCreate) {
+    public Optional<AreaDTO> partialUpdate(Long id, AreaCreate areaCreate) {
         return areaRepository.findById(id).map(area -> areaMapper.update(area, areaCreate)).map(areaRepository::save)
                 .map(areaMapper::toDTO);
+    }
+
+    @Transactional
+    public AreaDTO update(Long id, AreaCreate areaCreate) {
+        return Optional.of(areaCreate).map(area -> {
+            area.setId(id);
+            return area;
+        }).map(areaMapper::toEntity).map(areaRepository::save).map(areaMapper::toDTO).get();
     }
 
     @Transactional

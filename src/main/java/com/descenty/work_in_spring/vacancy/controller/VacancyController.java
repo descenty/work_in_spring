@@ -60,7 +60,7 @@ public class VacancyController {
 
     @PatchMapping("/areas/{areaId}/companies/{companyId}/vacancies/{id}")
     @PreAuthorize("@companySecurity.isCompanyEmployer(#companyId)")
-    public ResponseEntity<VacancyDTO> update(@PathVariable Long areaId, @PathVariable Long companyId,
+    public ResponseEntity<VacancyDTO> partialUpdate(@PathVariable Long areaId, @PathVariable Long companyId,
             @PathVariable UUID id, @Valid @RequestBody VacancyCreate vacancyCreate, Principal principal) {
         return vacancyService.update(areaId, companyId, id, vacancyCreate, UUID.fromString(principal.getName()))
                 .map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());

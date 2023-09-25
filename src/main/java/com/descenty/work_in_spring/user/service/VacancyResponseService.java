@@ -26,7 +26,6 @@ public class VacancyResponseService {
     private final VacancyResponseRepository vacancyResponseRepository;
     private final VacancyResponseMapper vacancyResponseMapper;
     private final VacancyRepository vacancyRepository;
-    private final CompanyRepository companyRepository;
     private final ResumeRepository resumeRepository;
 
     public List<VacancyResponseDTO> getAllByCompanyIdAndVacancyId(Long companyId, UUID vacancyId, UUID employerId)

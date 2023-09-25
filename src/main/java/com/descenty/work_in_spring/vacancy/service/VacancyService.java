@@ -56,12 +56,10 @@ public class VacancyService {
     }
 
     @Transactional
-    public Optional<VacancyDTO> update(Long companyId, Long areaId, UUID id, VacancyCreate vacancyCreate,
+    public Optional<VacancyDTO> partialUpdate(Long companyId, Long areaId, UUID id, VacancyCreate vacancyCreate,
             UUID employerId) throws ResponseStatusException {
         if (!companyRepository.existsById(companyId) || !areaRepository.existsById(areaId))
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Company or area not found");
-        if (!companyRepository.existsByIdAndEmployersIdsContaining(companyId, employerId))
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You are not an employer of this company");
 
         return vacancyRepository.findByAreaIdAndCompanyIdAndId(areaId, companyId, id)
                 .map(vacancy -> vacancyMapper.update(vacancy, vacancyCreate)).map(vacancyRepository::save)
@@ -70,9 +68,6 @@ public class VacancyService {
 
     @Transactional
     public boolean delete(Long areaId, Long companyId, UUID id, UUID employerId) {
-        if (!companyRepository.existsByIdAndEmployersIdsContaining(companyId, employerId))
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You are not an employer of this company");
-
         return vacancyRepository.deleteByAreaIdAndCompanyIdAndId(areaId, companyId, id) > 0;
     }
 

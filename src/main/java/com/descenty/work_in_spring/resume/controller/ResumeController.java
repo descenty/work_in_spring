@@ -68,7 +68,7 @@ public class ResumeController {
 
     @PatchMapping("/resumes/{id}")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<ResumeDTO> update(@PathVariable UUID id, @Valid @RequestBody ResumeCreate resumeCreate,
+    public ResponseEntity<ResumeDTO> partialUpdate(@PathVariable UUID id, @Valid @RequestBody ResumeCreate resumeCreate,
             Principal principal) {
         return resumeService.update(UUID.fromString(principal.getName()), id, resumeCreate).map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());

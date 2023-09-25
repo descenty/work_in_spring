@@ -37,7 +37,7 @@ public class ResumeService {
         }).map(resumeRepository::save).map(Resume::getId);
     }
 
-    public Optional<ResumeDTO> update(UUID userId, UUID id, ResumeCreate resumeCreate) {
+    public Optional<ResumeDTO> partialUpdate(UUID userId, UUID id, ResumeCreate resumeCreate) {
         return resumeRepository.findByUserIdAndId(userId, id).map(resume -> resumeMapper.update(resume, resumeCreate))
                 .map(resumeRepository::save).map(resumeMapper::toDTO);
     }

@@ -6,6 +6,8 @@ import com.descenty.work_in_spring.vacancy.VacancyMapper;
 import com.descenty.work_in_spring.vacancy.repository.VacancyRepository;
 import com.descenty.work_in_spring.vacancy.dto.VacancyCreate;
 import com.descenty.work_in_spring.vacancy.dto.VacancyDTO;
+import com.descenty.work_in_spring.vacancy.dto.VacancyModerationRequest;
+
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
@@ -33,17 +35,17 @@ public class VacancyService {
         return vacancyRepository.findAllByCompanyId(companyId).stream().map(vacancyMapper::toDTO).toList();
     }
 
-    public List<VacancyDTO> getAllByAreaIdAndCompanyId(Long areaId, Long companyId) {
-        return vacancyRepository.findAllByAreaIdAndCompanyId(areaId, companyId).stream().map(vacancyMapper::toDTO)
+    public List<VacancyDTO> getAllByCompanyIdAndAreaId(Long companyId, Long areaId) {
+        return vacancyRepository.findAllByAreaId(areaId).stream().map(vacancyMapper::toDTO)
                 .toList();
     }
 
-    public Optional<VacancyDTO> getById(Long areaId, Long companyId, UUID id) {
-        return vacancyRepository.findByAreaIdAndCompanyIdAndId(areaId, companyId, id).map(vacancyMapper::toDTO);
+    public Optional<VacancyDTO> getByCompanyIdAndAreaIdAndId(Long companyId, Long areaId, UUID id) {
+        return vacancyRepository.findByAreaIdAndId(areaId, id).map(vacancyMapper::toDTO);
     }
 
     @Transactional
-    public Optional<UUID> create(Long companyId, Long areaId, VacancyCreate vacancyCreate, UUID employerId)
+    public Optional<UUID> create(Long companyId, Long areaId, VacancyCreate vacancyCreate)
             throws ResponseStatusException {
         if (!companyRepository.existsById(companyId) || !areaRepository.existsById(areaId))
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Company or area not found");
@@ -56,19 +58,26 @@ public class VacancyService {
     }
 
     @Transactional
-    public Optional<VacancyDTO> partialUpdate(Long companyId, Long areaId, UUID id, VacancyCreate vacancyCreate,
-            UUID employerId) throws ResponseStatusException {
+    public Optional<VacancyDTO> partialUpdate(Long companyId, Long areaId, UUID id, VacancyCreate vacancyCreate)
+            throws ResponseStatusException {
         if (!companyRepository.existsById(companyId) || !areaRepository.existsById(areaId))
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Company or area not found");
 
-        return vacancyRepository.findByAreaIdAndCompanyIdAndId(areaId, companyId, id)
+        return vacancyRepository.findByAreaIdAndId(areaId, id)
                 .map(vacancy -> vacancyMapper.update(vacancy, vacancyCreate)).map(vacancyRepository::save)
                 .map(vacancyMapper::toDTO);
     }
 
     @Transactional
-    public boolean delete(Long areaId, Long companyId, UUID id, UUID employerId) {
-        return vacancyRepository.deleteByAreaIdAndCompanyIdAndId(areaId, companyId, id) > 0;
+    public boolean delete(Long companyId, Long areaId, UUID id) {
+        return vacancyRepository.deleteByAreaIdAndId(areaId, id) > 0;
+    }
+
+    public Optional<VacancyDTO> moderate(Long companyId, Long areaId, UUID id,
+            VacancyModerationRequest moderationRequest) throws ResponseStatusException {
+        return vacancyRepository.findByAreaIdAndId(areaId, id)
+                .map(vacancy -> vacancyMapper.update(vacancy, moderationRequest)).map(vacancyRepository::save)
+                .map(vacancyMapper::toDTO);
     }
 
 }

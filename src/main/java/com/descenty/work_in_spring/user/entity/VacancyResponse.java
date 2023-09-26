@@ -8,8 +8,6 @@ import lombok.Setter;
 
 import java.util.UUID;
 
-import org.hibernate.annotations.ColumnDefault;
-
 @Entity
 @Table(name = "vacancy_response")
 @Getter

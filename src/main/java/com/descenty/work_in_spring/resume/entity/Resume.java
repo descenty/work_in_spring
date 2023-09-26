@@ -1,6 +1,5 @@
 package com.descenty.work_in_spring.resume.entity;
 
-import com.descenty.work_in_spring.area.Area;
 import com.descenty.work_in_spring.user.entity.VacancyResponse;
 
 import jakarta.persistence.*;
@@ -10,14 +9,15 @@ import lombok.Setter;
 import java.util.List;
 import java.util.UUID;
 
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
-
 @Entity
 @Table(name = "resume")
 @Getter
 @Setter
 public class Resume {
+    public enum ModerationStatus {
+        PENDING, ACCEPTED, REJECTED
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
@@ -35,4 +35,8 @@ public class Resume {
 
     @OneToMany(mappedBy = "resume", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<VacancyResponse> vacancyResponses;
+
+    @Column(name = "moderation_status", nullable = false)
+    @Enumerated(EnumType.STRING)
+    private ModerationStatus moderationStatus = ModerationStatus.PENDING;
 }

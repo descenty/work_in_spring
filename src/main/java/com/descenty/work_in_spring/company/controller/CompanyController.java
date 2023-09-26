@@ -27,9 +27,10 @@ public class CompanyController {
         return companyService.getAllInArea(areaId);
     }
 
-    @GetMapping("/companies/{id}")
-    public ResponseEntity<CompanyDTO> getById(@PathVariable Long id) {
-        return companyService.getById(id).map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
+    @GetMapping("/areas/{areaId}/companies/{id}")
+    public ResponseEntity<CompanyDTO> getByAreaIdAndId(@PathVariable Long areaId, @PathVariable Long id) {
+        return companyService.getByAreaIdAndId(areaId, id).map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @PostMapping("/areas/{areaId}/companies")
@@ -43,18 +44,18 @@ public class CompanyController {
                 : ResponseEntity.notFound().build();
     }
 
-    @PatchMapping("/companies/{id}")
+    @PatchMapping("/areas/{areaId}/companies/{id}")
     @PreAuthorize("@companySecurity.isCreator(#id)")
-    public ResponseEntity<CompanyDTO> update(@PathVariable Long id, @Valid @RequestBody CompanyCreate companyCreate,
-            Principal principal) {
-        return companyService.update(id, companyCreate, UUID.fromString(principal.getName())).map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+    public ResponseEntity<CompanyDTO> partialUpdate(@PathVariable Long areaId, @PathVariable Long id,
+            @RequestBody CompanyCreate companyCreate, Principal principal) {
+        return companyService.partialUpdate(areaId, id, companyCreate, UUID.fromString(principal.getName()))
+                .map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
     }
 
-    @DeleteMapping("/companies/{id}")
+    @DeleteMapping("/areas/{areaId}/companies/{id}")
     @PreAuthorize("@companySecurity.isCreator(#id)")
-    public ResponseEntity<?> delete(@PathVariable Long id, Principal principal) {
-        return companyService.delete(id, UUID.fromString(principal.getName())) ? ResponseEntity.noContent().build()
+    public ResponseEntity<?> delete(@PathVariable Long areaId, @PathVariable Long id, Principal principal) {
+        return companyService.delete(areaId, id, UUID.fromString(principal.getName())) ? ResponseEntity.noContent().build()
                 : ResponseEntity.notFound().build();
     }
 

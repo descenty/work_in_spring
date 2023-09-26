@@ -14,12 +14,14 @@ public interface VacancyRepository extends JpaRepository<Vacancy, UUID> {
 
     List<Vacancy> findAllByCompanyId(Long companyId);
 
-    List<Vacancy> findAllByAreaIdAndCompanyId(Long areaId, Long companyId);
+    Optional<Vacancy> findByAreaIdAndId(Long areaId, UUID id);
 
-    Optional<Vacancy> findByAreaIdAndCompanyIdAndId(Long areaId, Long companyId, UUID id);
+    boolean existsByAreaIdAndId(Long areaId, UUID id);
 
-    boolean existsByCompanyIdAndId(Long companyId, UUID vacancyId);
+    boolean existsByCompanyId(Long companyId);
 
-    Long deleteByAreaIdAndCompanyIdAndId(Long areaId, Long companyId, UUID id);
+    boolean existsByCompanyIdAndId(Long companyId, UUID id);
+
+    Long deleteByAreaIdAndId(Long areaId, UUID id);
 
 }

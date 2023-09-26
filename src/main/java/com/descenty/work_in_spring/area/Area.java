@@ -3,7 +3,6 @@ package com.descenty.work_in_spring.area;
 import java.util.List;
 
 import com.descenty.work_in_spring.company.Company;
-import com.descenty.work_in_spring.resume.entity.Resume;
 
 import jakarta.persistence.*;
 import lombok.Getter;

@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.descenty.work_in_spring.resume.dto.ResumeCreate;
 import com.descenty.work_in_spring.resume.dto.ResumeDTO;
+import com.descenty.work_in_spring.resume.dto.ResumeModerationRequest;
 import com.descenty.work_in_spring.resume.entity.Resume;
 import com.descenty.work_in_spring.resume.mapper.ResumeMapper;
 import com.descenty.work_in_spring.resume.repository.ResumeRepository;
@@ -37,16 +38,26 @@ public class ResumeService {
         }).map(resumeRepository::save).map(Resume::getId);
     }
 
+    @Transactional
     public Optional<ResumeDTO> partialUpdate(UUID userId, UUID id, ResumeCreate resumeCreate) {
         return resumeRepository.findByUserIdAndId(userId, id).map(resume -> resumeMapper.update(resume, resumeCreate))
                 .map(resumeRepository::save).map(resumeMapper::toDTO);
     }
 
+    @Transactional
     public boolean deleteByUserId(UUID userId) {
         return resumeRepository.deleteByUserId(userId) > 0;
     }
 
+    @Transactional
     public boolean deleteByUserIdAndId(UUID userId, UUID id) {
         return resumeRepository.deleteByUserIdAndId(userId, id) > 0;
+    }
+
+    @Transactional
+    public Optional<ResumeDTO> moderate(UUID userId, UUID id, ResumeModerationRequest moderationRequest) {
+        return resumeRepository.findByUserIdAndId(userId, id)
+                .map(resume -> resumeMapper.update(resume, moderationRequest)).map(resumeRepository::save)
+                .map(resumeMapper::toDTO);
     }
 }

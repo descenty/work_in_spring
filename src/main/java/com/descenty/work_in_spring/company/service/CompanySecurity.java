@@ -19,16 +19,16 @@ public class CompanySecurity {
 
     public boolean isCompanyEmployer(Long companyId) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        return authentication.getAuthorities().stream()
+        return authentication.getName() != "anonymousUser" && (authentication.getAuthorities().stream()
                 .anyMatch((authority) -> authority.getAuthority().equals("admin"))
-                || authentication.getName() != "anonymousUser" && companyRepository
-                        .existsByIdAndEmployersIdsContaining(companyId, UUID.fromString(authentication.getName()));
+                || companyRepository.existsByIdAndEmployersIdsContaining(companyId,
+                        UUID.fromString(authentication.getName())));
     }
 
     public boolean isCreator(Long companyId) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        return authentication.getAuthorities().stream()
+        return authentication.getName() != "anonymousUser" && (authentication.getAuthorities().stream()
                 .anyMatch((authority) -> authority.getAuthority().equals("admin"))
-                || companyRepository.existsByIdAndCreatorId(companyId, UUID.fromString(authentication.getName()));
+                || companyRepository.existsByIdAndCreatorId(companyId, UUID.fromString(authentication.getName())));
     }
 }

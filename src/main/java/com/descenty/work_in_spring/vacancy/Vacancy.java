@@ -17,6 +17,10 @@ import lombok.Setter;
 @Getter
 @Setter
 public class Vacancy {
+    public enum ModerationStatus {
+        PENDING, ACCEPTED, REJECTED
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
@@ -50,10 +54,22 @@ public class Vacancy {
     @OneToMany(mappedBy = "vacancy", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<VacancyResponse> responses;
 
-    private Boolean isPublished;
-    private Boolean isInArchive;
+    @Column(name = "moderation_status", nullable = false)
+    @Enumerated(EnumType.STRING)
+    private ModerationStatus moderationStatus = ModerationStatus.PENDING;
+
+    @Column(nullable = false)
+    private Boolean isPublished = false;
+
+    @Column(nullable = false)
+    private Boolean isInArchive = false;
+
     private Timestamp publishedAt;
+
     private Timestamp archivedAt;
+
+    @Column(nullable = false)
+    private Timestamp createdAt = new Timestamp(System.currentTimeMillis());
 
     public void publish() {
         this.isPublished = true;

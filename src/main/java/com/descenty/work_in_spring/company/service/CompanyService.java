@@ -26,6 +26,10 @@ public class CompanyService {
         return companyRepository.findAllByAreaId(areaId).stream().map(companyMapper::toDTO).toList();
     }
 
+    public Optional<CompanyDTO> getByAreaIdAndId(Long areaId, Long id) {
+        return companyRepository.findByAreaIdAndId(areaId, id).map(companyMapper::toDTO);
+    }
+
     public Optional<CompanyDTO> getById(Long id) {
         return companyRepository.findById(id).map(companyMapper::toDTO);
     }
@@ -43,14 +47,15 @@ public class CompanyService {
     }
 
     @Transactional
-    public Optional<CompanyDTO> update(Long id, CompanyCreate companyCreate, UUID employerId) {
-        return companyRepository.findById(id).map(company -> companyMapper.update(company, companyCreate))
-                .map(companyRepository::save).map(companyMapper::toDTO);
+    public Optional<CompanyDTO> partialUpdate(Long areaId, Long id, CompanyCreate companyCreate, UUID employerId) {
+        return companyRepository.findByAreaIdAndId(areaId, id)
+                .map(company -> companyMapper.update(company, companyCreate)).map(companyRepository::save)
+                .map(companyMapper::toDTO);
     }
 
     @Transactional
-    public boolean delete(Long id, UUID employerId) {
-        return companyRepository.findById(id).map(area -> {
+    public boolean delete(Long areaId, Long id, UUID employerId) {
+        return companyRepository.findByAreaIdAndId(areaId, id).map(area -> {
             companyRepository.delete(area);
             return true;
         }).orElse(false);

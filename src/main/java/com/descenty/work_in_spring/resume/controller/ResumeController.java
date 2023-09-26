@@ -19,6 +19,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.descenty.work_in_spring.resume.dto.ResumeCreate;
 import com.descenty.work_in_spring.resume.dto.ResumeDTO;
+import com.descenty.work_in_spring.resume.dto.ResumeModerationRequest;
 import com.descenty.work_in_spring.resume.service.ResumeService;
 
 import jakarta.validation.Valid;
@@ -51,7 +52,7 @@ public class ResumeController {
 
     @GetMapping("/{userId}/resumes/{id}")
     @PreAuthorize("hasAuthority('admin')")
-    public ResponseEntity<ResumeDTO> getByUserId(@PathVariable UUID userId, @PathVariable UUID id) {
+    public ResponseEntity<ResumeDTO> getByUserIdAndId(@PathVariable UUID userId, @PathVariable UUID id) {
         return resumeService.getByUserIdAndId(userId, id).map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
@@ -68,10 +69,10 @@ public class ResumeController {
 
     @PatchMapping("/resumes/{id}")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<ResumeDTO> partialUpdate(@PathVariable UUID id, @Valid @RequestBody ResumeCreate resumeCreate,
+    public ResponseEntity<ResumeDTO> partialUpdate(@PathVariable UUID id, @RequestBody ResumeCreate resumeCreate,
             Principal principal) {
-        return resumeService.update(UUID.fromString(principal.getName()), id, resumeCreate).map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+        return resumeService.partialUpdate(UUID.fromString(principal.getName()), id, resumeCreate)
+                .map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
     }
 
     @DeleteMapping("/resumes/{id}")
@@ -80,5 +81,13 @@ public class ResumeController {
         if (resumeService.deleteByUserIdAndId(UUID.fromString(principal.getName()), id))
             return ResponseEntity.noContent().build();
         return ResponseEntity.notFound().build();
+    }
+
+    @PostMapping("{userId}/resumes/{id}/moderation")
+    @PreAuthorize("hasAuthority('moderator')")
+    public ResponseEntity<?> moderate(@PathVariable UUID userId, @PathVariable UUID id,
+            @Valid @RequestBody ResumeModerationRequest moderationRequest) {
+        return resumeService.moderate(userId, id, moderationRequest).map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 }

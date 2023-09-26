@@ -40,4 +40,4 @@ server:
   port: 8001
 springdoc:
   api-docs:
-    path: /api-docs
+    path: /api-docs 

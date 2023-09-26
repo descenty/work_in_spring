@@ -1,5 +1,7 @@
 package com.descenty.work_in_spring.configuration;
 
+import java.util.List;
+
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -19,13 +21,9 @@ public class SecurityConfiguration {
         SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
                 http.cors().configurationSource(request -> {
                         var cors = new org.springframework.web.cors.CorsConfiguration();
-                        cors.setAllowedOrigins(java.util.List.of("http://localhost:19006"));
-                        // cors.setAllowedMethods(java.util.List.of("GET", "POST", "PUT", "DELETE"));
-                        // cors.setAllowedHeaders(java.util.List.of("*"));
+                        cors.setAllowedOrigins(List.of("http://localhost:3000"));
                         return cors;
                 });
-                // TODO for authenticated routes set hasAuthority('user') or
-                // hasAuthority('admin')
                 http.csrf().disable().authorizeHttpRequests().anyRequest().permitAll().and().oauth2ResourceServer()
                                 .jwt().jwtAuthenticationConverter(new KeycloakJwtAuthenticationConverter());
                 http.oauth2Client().and().oauth2Login().tokenEndpoint().and().userInfoEndpoint();

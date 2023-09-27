@@ -35,3 +35,6 @@ out/
 
 containers/keycloak/certs/
 tests/api/http-client.env.json
+
+.env
+.env.host1

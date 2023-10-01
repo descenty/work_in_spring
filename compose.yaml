@@ -15,7 +15,7 @@ services:
     build: containers/keycloak
     container_name: work-in-keycloak
     restart: always
-    command: start-dev --db postgres
+    command: start-dev --db postgres --import-realm
     ports:
       - 8443:8443
     environment:
@@ -34,17 +34,17 @@ services:
       retries: 15
     depends_on:
       - postgres
-  redis:
-    image: redis:7
-    container_name: work-in-redis
-    command: >
-      --requirepass ${REDIS_PASSWORD}
-    expose:
-      - 6379
-    environment:
-      - TZ=Europe/Moscow
-    volumes:
-      - redis-data:/data/_data
+  # redis:
+  #   image: redis:7
+  #   container_name: work-in-redis
+  #   command: >
+  #     --requirepass ${REDIS_PASSWORD}
+  #   expose:
+  #     - 6379
+  #   environment:
+  #     - TZ=Europe/Moscow
+  #   volumes:
+  #     - redis-data:/data/_data
   app:
     image: descenty/work_in_spring
     pull_policy: always
@@ -66,4 +66,4 @@ services:
       - keycloak
 volumes:
   postgres-data:
-  redis-data:
+  # redis-data:
